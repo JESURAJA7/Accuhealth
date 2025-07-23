@@ -4,8 +4,6 @@ import { useAuth } from '../contexts/AuthContext';
 import { Heart, Eye, EyeOff, Mail, Lock, ArrowRight, Shield } from 'lucide-react';
 import logo from '../public/acchu_logo.png';
 
-const API_URL = import.meta.env.VITE_API_URL;
-
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -19,18 +17,35 @@ const Login: React.FC = () => {
     e.preventDefault();
     setLoading(true);
     setError('');
-    navigate('/dashboard');
 
-    // const success = await login(email, password);
+    const success = await login(email, password);
     
-    // if (success) {
-    //   console.log('Token:', localStorage.getItem('token'));
-    //   navigate('/dashboard');
-    // } else {
-    //   setError('Invalid email or password');
-    // }
+    if (success) {
+      console.log('Token:', localStorage.getItem('token'));
+      navigate('/dashboard');
+    } else {
+      setError('Invalid email or password');
+    }
     
     setLoading(false);
+  };
+
+  // New function to handle demo login
+  const handleDemoLogin = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    setEmail('admin@gmail.com');
+    setPassword('admin@1234');
+    
+    // Optional: Auto-submit the form after setting credentials
+    // setLoading(true);
+    // setError('');
+    // const success = await login('admin@gmail.com', 'admin@1234');
+    // if (success) {
+    //   navigate('/dashboard');
+    // } else {
+    //   setError('Failed to login with demo credentials');
+    // }
+    // setLoading(false);
   };
 
   return (
@@ -44,10 +59,8 @@ const Login: React.FC = () => {
       <div className="max-w-md w-full space-y-8 relative z-10">
         {/* Header */}
         <div className="text-center animate-fade-in">
-          <div className="flex items-center justify-center space-x-3 ">
+          <div className="flex items-center justify-center space-x-3">
            <img src={logo} alt="AccuHealth Logo" className="h-[90px] w-[170px]" />
-
-           
           </div>
           <div className="space-y-2">
             <h2 className="text-3xl font-bold text-slate-900">Welcome Back</h2>
@@ -76,7 +89,6 @@ const Login: React.FC = () => {
                     id="email"
                     name="email"
                     type="email"
-                    // required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="input pl-11"
@@ -95,7 +107,6 @@ const Login: React.FC = () => {
                     id="password"
                     name="password"
                     type={showPassword ? 'text' : 'password'}
-                    // required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className="input pl-11 pr-11"
@@ -153,6 +164,16 @@ const Login: React.FC = () => {
               )}
             </button>
 
+            {/* Add Demo Login Button */}
+            <button
+              onClick={handleDemoLogin}
+              className="w-full btn btn-secondary py-3 text-base font-medium"
+            >
+              <div className="flex items-center justify-center space-x-2">
+                <span>Use Demo Account</span>
+              </div>
+            </button>
+
             <div className="text-center">
               <span className="text-sm text-slate-600">
                 Don't have an account?{' '}
@@ -163,28 +184,6 @@ const Login: React.FC = () => {
             </div>
           </form>
         </div>
-
-        {/* Features */}
-        {/* <div className="grid grid-cols-3 gap-4 animate-slide-up" style={{ animationDelay: '200ms' }}>
-          <div className="text-center">
-            <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-2">
-              <Shield className="h-6 w-6 text-blue-600" />
-            </div>
-            <div className="text-xs text-slate-600">Secure Access</div>
-          </div>
-          <div className="text-center">
-            <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mx-auto mb-2">
-              <Heart className="h-6 w-6 text-green-600" />
-            </div>
-            <div className="text-xs text-slate-600">Health Focused</div>
-          </div>
-          <div className="text-center">
-            <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mx-auto mb-2">
-              <ArrowRight className="h-6 w-6 text-purple-600" />
-            </div>
-            <div className="text-xs text-slate-600">Easy to Use</div>
-          </div>
-        </div> */}
       </div>
     </div>
   );
