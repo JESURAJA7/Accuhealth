@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../../contexts/AuthContext';
 import { Heart, Eye, EyeOff, Mail, Lock, ArrowRight, Shield } from 'lucide-react';
-import logo from '../public/acchu_logo.png';
+import logo from '../../public/acchu_logo.png';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -17,6 +17,8 @@ const Login: React.FC = () => {
     e.preventDefault();
     setLoading(true);
     setError('');
+       setEmail('admin@gmail.com');
+    setPassword('admin@1234');
 
     const success = await login(email, password);
     
@@ -165,14 +167,14 @@ const Login: React.FC = () => {
             </button>
 
             {/* Add Demo Login Button */}
-            <button
+             <button
               onClick={handleDemoLogin}
               className="w-full btn btn-secondary py-3 text-base font-medium"
             >
               <div className="flex items-center justify-center space-x-2">
                 <span>Use Demo Account</span>
               </div>
-            </button>
+            </button> 
 
             <div className="text-center">
               <span className="text-sm text-slate-600">
@@ -181,7 +183,7 @@ const Login: React.FC = () => {
                   Create Account
                 </Link>
               </span>
-            </div>
+            </div> 
           </form>
         </div>
       </div>

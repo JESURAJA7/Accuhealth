@@ -125,89 +125,90 @@ const Dashboard: React.FC = () => {
   ];
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gradient">AcchuHealth Dashboard</h1>
-          <p className="text-slate-600 mt-2">Real-time insights into disease surveillance and management</p>
+          <h1 className="text-2xl font-bold text-gradient">AccuHealth Dashboard</h1>
+          <p className="text-slate-600 mt-1 text-sm">Real-time insights into disease surveillance and management</p>
         </div>
         <div className="flex items-center space-x-3">
-          <div className="flex items-center space-x-2 bg-white/80 backdrop-blur-sm rounded-xl px-4 py-2 border border-slate-200">
-            <Clock className="h-4 w-4 text-slate-500" />
-            <span className="text-sm text-slate-600">Last updated: 2 min ago</span>
+          <div className="flex items-center space-x-2 bg-white/80 backdrop-blur-sm rounded-lg px-3 py-1.5 border border-slate-200">
+            <Clock className="h-3 w-3 text-slate-500" />
+            <span className="text-xs text-slate-600">Last updated: 2 min ago</span>
           </div>
         </div>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
         {statCards.map((card, index) => {
           const Icon = card.icon;
           const TrendIcon = card.trend === 'up' ? TrendingUp : TrendingDown;
           return (
-            <div key={index} className="card group hover:shadow-xl transition-all duration-300 animate-slide-up" style={{ animationDelay: `${index * 100}ms` }}>
-              <div className="p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <div className={`w-12 h-12 ${card.bgColor} rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
-                    <Icon className={`h-6 w-6 ${card.iconColor}`} />
+            <div key={index} className="card group hover:shadow-lg transition-all duration-300 animate-slide-up" style={{ animationDelay: `${index * 100}ms` }}>
+              <div className="p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <div className={`w-8 h-8 ${card.bgColor} rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
+                    <Icon className={`h-4 w-4 ${card.iconColor}`} />
                   </div>
-                  <div className={`flex items-center space-x-1 px-2 py-1 rounded-lg text-xs font-medium ${
+                  <div className={`flex items-center space-x-1 px-1.5 py-0.5 rounded-md text-xs font-medium ${
                     card.trend === 'up' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
                   }`}>
-                    <TrendIcon className="h-3 w-3" />
+                    <TrendIcon className="h-2.5 w-2.5" />
                     <span>{card.change}</span>
                   </div>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-slate-600 mb-1">{card.title}</p>
-                  <p className="text-3xl font-bold text-slate-900">{card.value}</p>
+                  <p className="text-xs font-medium text-slate-600 mb-1">{card.title}</p>
+                  <p className="text-2xl font-bold text-slate-900">{card.value}</p>
                 </div>
               </div>
-              <div className={`h-1 bg-gradient-to-r ${card.color} rounded-b-xl`}></div>
+              <div className={`h-0.5 bg-gradient-to-r ${card.color} rounded-b-xl`}></div>
             </div>
           );
         })}
       </div>
 
       {/* Charts Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 space-x-8 ">
         {/* Cases by Governorate Chart */}
-        <div className="lg:col-span-2 card p-6">
-          <div className="flex items-center justify-between mb-6">
+        <div className="card p-2 w-[450px] h-[300px]">
+          <div className="flex items-center justify-between mb-4">
             <div>
-              <h3 className="text-xl font-bold text-slate-900">Cases by Governorate</h3>
-              <p className="text-sm text-slate-600 mt-1">Distribution across regions</p>
+              <h3 className="text-lg font-bold text-slate-900">Cases by Governorate</h3>
+              <p className="text-xs text-slate-600 mt-0.5">Distribution across regions</p>
             </div>
             <div className="flex items-center space-x-2">
-              <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-              <span className="text-sm text-slate-600">Active Cases</span>
+              <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+              <span className="text-xs text-slate-600">Active Cases</span>
             </div>
           </div>
-          <div className="h-80">
+          <div className="h-56">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={casesByGovernorate} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
+              <BarChart data={casesByGovernorate} margin={{ top: 10, right: 20, left: 10, bottom: 40 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
                 <XAxis 
                   dataKey="name" 
-                  tick={{ fontSize: 12, fill: '#64748b' }}
+                  tick={{ fontSize: 10, fill: '#64748b' }}
                   angle={-45}
                   textAnchor="end"
-                  height={80}
+                  height={60}
                 />
-                <YAxis tick={{ fontSize: 12, fill: '#64748b' }} />
+                <YAxis tick={{ fontSize: 10, fill: '#64748b' }} />
                 <Tooltip 
                   contentStyle={{ 
                     backgroundColor: 'white', 
                     border: '1px solid #e2e8f0', 
-                    borderRadius: '12px',
-                    boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)'
+                    borderRadius: '8px',
+                    boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
+                    fontSize: '12px'
                   }} 
                 />
                 <Bar 
                   dataKey="cases" 
                   fill="url(#blueGradient)" 
-                  radius={[4, 4, 0, 0]}
+                  radius={[2, 2, 0, 0]}
                 />
                 <defs>
                   <linearGradient id="blueGradient" x1="0" y1="0" x2="0" y2="1">
@@ -221,21 +222,21 @@ const Dashboard: React.FC = () => {
         </div>
 
         {/* Top Affected Regions */}
-        <div className="card p-6">
-          <div className="flex items-center justify-between mb-6">
+        <div className="card p-4 space-y-4 ">
+          <div className="flex items-center justify-between mb-4">
             <div>
-              <h3 className="text-xl font-bold text-slate-900">Top Affected Regions</h3>
-              <p className="text-sm text-slate-600 mt-1">Highest case counts</p>
+              <h3 className="text-lg font-bold text-slate-900">Top Affected Regions</h3>
+              <p className="text-xs text-slate-600 mt-0.5">Highest case counts</p>
             </div>
-            <button className="text-blue-600 hover:text-blue-800 text-sm font-medium hover:bg-blue-50 px-3 py-1 rounded-lg transition-colors">
+            <button className="text-blue-600 hover:text-blue-800 text-xs font-medium hover:bg-blue-50 px-2 py-1 rounded-md transition-colors">
               View All
             </button>
           </div>
-          <div className="space-y-4">
+          <div className="space-y-2">
             {topRegions.map((region, index) => (
-              <div key={index} className="flex items-center justify-between p-3 bg-slate-50 rounded-xl hover:bg-slate-100 transition-colors">
-                <div className="flex items-center space-x-3">
-                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold text-sm ${
+              <div key={index} className="flex items-center justify-between p-2 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors">
+                <div className="flex items-center space-x-2">
+                  <div className={`w-6 h-6 rounded-md flex items-center justify-center text-white font-bold text-xs ${
                     index === 0 ? 'bg-gradient-to-r from-yellow-400 to-yellow-500' :
                     index === 1 ? 'bg-gradient-to-r from-gray-400 to-gray-500' :
                     index === 2 ? 'bg-gradient-to-r from-orange-400 to-orange-500' :
@@ -243,10 +244,10 @@ const Dashboard: React.FC = () => {
                   }`}>
                     {index + 1}
                   </div>
-                  <span className="font-medium text-slate-900">{region.name}</span>
+                  <span className="font-medium text-slate-900 text-sm">{region.name}</span>
                 </div>
                 <div className="text-right">
-                  <div className="font-bold text-slate-900">{region.cases}</div>
+                  <div className="font-bold text-slate-900 text-sm">{region.cases}</div>
                   <div className="text-xs text-slate-500">cases</div>
                 </div>
               </div>
@@ -256,53 +257,54 @@ const Dashboard: React.FC = () => {
       </div>
 
       {/* Additional Charts Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Trend Chart */}
-        <div className="card p-6">
-          <div className="flex items-center justify-between mb-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+       
+        {/* <div className="card p-4">
+          <div className="flex items-center justify-between mb-4">
             <div>
-              <h3 className="text-xl font-bold text-slate-900">Monthly Trends</h3>
-              <p className="text-sm text-slate-600 mt-1">Cases vs Recovery rate</p>
+              <h3 className="text-lg font-bold text-slate-900">Monthly Trends</h3>
+              <p className="text-xs text-slate-600 mt-0.5">Cases vs Recovery rate</p>
             </div>
           </div>
-          <div className="h-64">
+          <div className="h-48">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={trendData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                <XAxis dataKey="date" tick={{ fontSize: 12, fill: '#64748b' }} />
-                <YAxis tick={{ fontSize: 12, fill: '#64748b' }} />
+                <XAxis dataKey="date" tick={{ fontSize: 10, fill: '#64748b' }} />
+                <YAxis tick={{ fontSize: 10, fill: '#64748b' }} />
                 <Tooltip 
                   contentStyle={{ 
                     backgroundColor: 'white', 
                     border: '1px solid #e2e8f0', 
-                    borderRadius: '12px',
-                    boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)'
+                    borderRadius: '8px',
+                    boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
+                    fontSize: '12px'
                   }} 
                 />
-                <Line type="monotone" dataKey="cases" stroke="#ef4444" strokeWidth={3} dot={{ fill: '#ef4444', strokeWidth: 2, r: 4 }} />
-                <Line type="monotone" dataKey="recovered" stroke="#10b981" strokeWidth={3} dot={{ fill: '#10b981', strokeWidth: 2, r: 4 }} />
+                <Line type="monotone" dataKey="cases" stroke="#ef4444" strokeWidth={2} dot={{ fill: '#ef4444', strokeWidth: 2, r: 3 }} />
+                <Line type="monotone" dataKey="recovered" stroke="#10b981" strokeWidth={2} dot={{ fill: '#10b981', strokeWidth: 2, r: 3 }} />
               </LineChart>
             </ResponsiveContainer>
           </div>
-        </div>
+        </div> */}
 
         {/* Case Distribution Pie Chart */}
-        <div className="card p-6">
-          <div className="flex items-center justify-between mb-6">
+        {/* <div className="card p-4">
+          <div className="flex items-center justify-between mb-4">
             <div>
-              <h3 className="text-xl font-bold text-slate-900">Case Distribution</h3>
-              <p className="text-sm text-slate-600 mt-1">Current status breakdown</p>
+              <h3 className="text-lg font-bold text-slate-900">Case Distribution</h3>
+              <p className="text-xs text-slate-600 mt-0.5">Current status breakdown</p>
             </div>
           </div>
-          <div className="h-64">
+          <div className="h-48">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
                   data={pieData}
                   cx="50%"
                   cy="50%"
-                  innerRadius={60}
-                  outerRadius={100}
+                  innerRadius={40}
+                  outerRadius={80}
                   paddingAngle={5}
                   dataKey="value"
                 >
@@ -314,22 +316,23 @@ const Dashboard: React.FC = () => {
                   contentStyle={{ 
                     backgroundColor: 'white', 
                     border: '1px solid #e2e8f0', 
-                    borderRadius: '12px',
-                    boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)'
+                    borderRadius: '8px',
+                    boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
+                    fontSize: '12px'
                   }} 
                 />
               </PieChart>
             </ResponsiveContainer>
           </div>
-          <div className="flex justify-center space-x-6 mt-4">
+          <div className="flex justify-center space-x-4 mt-3">
             {pieData.map((item, index) => (
-              <div key={index} className="flex items-center space-x-2">
-                <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }}></div>
-                <span className="text-sm text-slate-600">{item.name}</span>
+              <div key={index} className="flex items-center space-x-1">
+                <div className="w-2 h-2 rounded-full" style={{ backgroundColor: item.color }}></div>
+                <span className="text-xs text-slate-600">{item.name}</span>
               </div>
             ))}
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

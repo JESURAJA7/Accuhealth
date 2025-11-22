@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../../contexts/AuthContext';
 import { Heart, Eye, EyeOff, Mail, Lock, User, ArrowRight, Shield, CheckCircle } from 'lucide-react';
-import logo from '../public/acchu_logo.png';
+import logo from '../../public/acchu_logo.png';
 
 const Register: React.FC = () => {
   const [name, setName] = useState('');
