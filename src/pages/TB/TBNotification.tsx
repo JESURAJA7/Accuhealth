@@ -147,76 +147,76 @@ const TBNotification: React.FC = () => {
   };
 
   const validateForm = (): boolean => {
-  const errors: string[] = [];
+    const errors: string[] = [];
 
-  // if (!formData.institution) errors.push('Institution is required');
-  if (!formData.patientId) errors.push('Patient ID is required');
-  if (!formData.dob) errors.push('Date of Birth is required');
-  if (!formData.nationality) errors.push('Nationality is required');
-  if (!formData.firstName) errors.push('First Name is required');
-  if (!formData.gender) errors.push('Gender is required');
-  if (!formData.occupations) errors.push('Occupations is required');
-  if (!formData.placeOfWork) errors.push('Place of Work is required');
-  if (!formData.patientGovernorate) errors.push('Patient Governorate is required');
-  // if (!formData.patientWilayat) errors.push('Patient Wilayat is required');
-  // if (!formData.village) errors.push('Village is required');
-  if (!formData.firstSymptom) errors.push('First Symptom is required');
-  if (!formData.onsetSymptom) errors.push('Onset of First Symptom is required');
-  if (!formData.classification) errors.push('Classification is required');
-  if (!formData.outcome) errors.push('Outcome is required');
-  if (!formData.outcomeDate) errors.push('Outcome Date is required');
-  if (!formData.confirmedTB) errors.push('Confirmed TB status is required');
+    // if (!formData.institution) errors.push('Institution is required');
+    if (!formData.patientId) errors.push('Patient ID is required');
+    if (!formData.dob) errors.push('Date of Birth is required');
+    if (!formData.nationality) errors.push('Nationality is required');
+    if (!formData.firstName) errors.push('First Name is required');
+    if (!formData.gender) errors.push('Gender is required');
+    if (!formData.occupations) errors.push('Occupations is required');
+    if (!formData.placeOfWork) errors.push('Place of Work is required');
+    if (!formData.patientGovernorate) errors.push('Patient Governorate is required');
+    // if (!formData.patientWilayat) errors.push('Patient Wilayat is required');
+    // if (!formData.village) errors.push('Village is required');
+    if (!formData.firstSymptom) errors.push('First Symptom is required');
+    if (!formData.onsetSymptom) errors.push('Onset of First Symptom is required');
+    if (!formData.classification) errors.push('Classification is required');
+    if (!formData.outcome) errors.push('Outcome is required');
+    if (!formData.outcomeDate) errors.push('Outcome Date is required');
+    if (!formData.confirmedTB) errors.push('Confirmed TB status is required');
 
-  if (errors.length > 0) {
-    alert(`Please fill in all required fields:\n\n${errors.join('\n')}`);
-    return false;
-  }
+    if (errors.length > 0) {
+      alert(`Please fill in all required fields:\n\n${errors.join('\n')}`);
+      return false;
+    }
 
-  return true;
-};
+    return true;
+  };
 
 
   const handleSubmit = async () => {
-  if (!validateForm()) {
-    return;
-  }
-
-  setLoading(true);
-  try {
-    const token = localStorage.getItem('token');
-
-    if (!token) {
-      alert('Authentication required. Please log in again.');
+    if (!validateForm()) {
       return;
     }
 
-    const response = await fetch(`${API_URL}/tb`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(formData)
-    });
+    setLoading(true);
+    try {
+      const token = localStorage.getItem('token');
 
-    const data = await response.json();
-
-    if (response.ok) {
-      alert(`TB Notification created successfully! ID: ${data.notificationId}`);
-      window.history.back();
-    } else {
-      alert(`Error: ${data.error || 'Failed to create notification'}`);
-      if (data.missingFields) {
-        alert(`Missing required fields: ${data.missingFields.join(', ')}`);
+      if (!token) {
+        alert('Authentication required. Please log in again.');
+        return;
       }
+
+      const response = await fetch(`${API_URL}/tb`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert(`TB Notification created successfully! ID: ${data.notificationId}`);
+        window.history.back();
+      } else {
+        alert(`Error: ${data.error || 'Failed to create notification'}`);
+        if (data.missingFields) {
+          alert(`Missing required fields: ${data.missingFields.join(', ')}`);
+        }
+      }
+    } catch (error) {
+      console.error('Error submitting notification:', error);
+      alert('Network error. Please check your connection and try again.');
+    } finally {
+      setLoading(false);
     }
-  } catch (error) {
-    console.error('Error submitting notification:', error);
-    alert('Network error. Please check your connection and try again.');
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   const renderPatientInfo = () => (
     <div className="space-y-8">
@@ -1483,13 +1483,14 @@ const TBNotification: React.FC = () => {
 
               return (
                 <React.Fragment key={step.id}>
-                  <div className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 ${
-                    isActive
-                      ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/25'
-                      : isCompleted
-                      ? 'bg-green-100 text-green-700'
-                      : 'bg-slate-100 text-slate-600'
-                  }`}>
+                  <div
+                    onClick={() => setCurrentStep(index)}
+                    className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 cursor-pointer ${isActive
+                        ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/25'
+                        : isCompleted
+                          ? 'bg-green-100 text-green-700 hover:bg-green-200'
+                          : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                      }`}>
                     <Icon className="h-5 w-5" />
                     <span className="font-medium text-sm hidden sm:block">{step.title}</span>
                   </div>

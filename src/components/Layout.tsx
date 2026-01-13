@@ -20,7 +20,14 @@ import {
   Heart,
   Search,
   Activity,
-  HeartPulse ,
+  HeartPulse,
+  Bug,
+  Stethoscope,
+  Thermometer,
+  Wind,
+  Droplet,
+  FlaskConical,
+  CircleDot,
 } from 'lucide-react';
 
 interface User {
@@ -64,9 +71,9 @@ const FloatingParticles: React.FC = () => (
   </div>
 );
 
-const RippleButton: React.FC<{ children: React.ReactNode; onClick?: () => void }> = ({ 
-  children, 
-  onClick 
+const RippleButton: React.FC<{ children: React.ReactNode; onClick?: () => void }> = ({
+  children,
+  onClick
 }) => {
   const [ripple, setRipple] = useState<{ x: number; y: number } | null>(null);
 
@@ -96,9 +103,9 @@ const RippleButton: React.FC<{ children: React.ReactNode; onClick?: () => void }
   );
 };
 
-const PulseGlow: React.FC<{ children: React.ReactNode; active?: boolean }> = ({ 
-  children, 
-  active = false 
+const PulseGlow: React.FC<{ children: React.ReactNode; active?: boolean }> = ({
+  children,
+  active = false
 }) => (
   <div className="relative">
     {active && (
@@ -204,18 +211,20 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       icon: Bell,
       hasSubmenu: true,
       children: [
-        { 
-          name: 'Malaria', 
+        {
+          name: 'Malaria',
           href: '/malaria-notification',
+          icon: Bug,
           hasSubmenu: true,
           children: [
             { name: 'Notification', href: '/malaria-notification' },
             { name: 'Listing', href: '/malaria-listing' },
           ]
         },
-        { 
-          name: 'TB', 
+        {
+          name: 'TB',
           href: '/tb-notification',
+          icon: Stethoscope,
           hasSubmenu: true,
           children: [
             { name: 'Notification', href: '/tb-notification' },
@@ -223,40 +232,53 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             { name: 'TB Listing', href: '/tb-listing' },
           ]
         },
-        { 
-          name: 'Fever & Rash', 
+        {
+          name: 'Fever & Rash',
           href: '/fever-rash-entry',
+          icon: Thermometer,
           hasSubmenu: true,
           children: [
             { name: 'New Entry', href: '/fever-rash-entry' },
             { name: 'Notification Listing', href: '/fever-notification-listing' },
           ]
         },
-        { 
-          name: 'ARI', 
+        {
+          name: 'ARI',
           href: '/ari-notification',
+          icon: Wind,
           hasSubmenu: true,
           children: [
             { name: 'Notification', href: '/ari-notification' },
             { name: 'Listing', href: '/ari-listing' },
           ]
         },
-        { 
-          name: 'Polio', 
+        {
+          name: 'Polio',
           href: '/polio-case-listing',
+          icon: CircleDot,
           hasSubmenu: true,
           children: [
             { name: 'Case Listing', href: '/polio-case-listing' },
             { name: 'Investigation', href: '/polio-investigation' },
           ]
         },
-        { 
-          name: 'Hemorrhagic ds', 
+        {
+          name: 'Hemorrhagic ds',
           href: '/hemorrhagic-diseases',
+          icon: Droplet,
           hasSubmenu: true,
           children: [
-            { name: 'Case Reporting', href: '/hemorrhagic-case-reporting' },
-            { name: 'Case Listing', href: '/hemorrhagic-case-listing' },
+            { name: 'New Entry', href: '/hemorrhagic-new-entry' },
+            { name: 'Notification Listing', href: '/hemorrhagic-notification-listing' },
+          ]
+        },
+        {
+          name: 'HEV',
+          href: '/hev-notification',
+          icon: FlaskConical,
+          hasSubmenu: true,
+          children: [
+            { name: 'Notification', href: '/hev-notification' },
           ]
         },
       ],
@@ -268,8 +290,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       icon: FileText,
       hasSubmenu: true,
       children: [
-        { 
-          name: 'Vaccination Report', 
+        {
+          name: 'Vaccination Report',
           href: '/vaccination-report',
           hasSubmenu: true,
           children: [
@@ -278,8 +300,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             { name: 'Monthly Report', href: '/vaccination-monthly-report' },
           ]
         },
-        { 
-          name: 'Malaria Report', 
+        {
+          name: 'Malaria Report',
           href: '/malaria-report',
           hasSubmenu: true,
           children: [
@@ -341,7 +363,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         return item.children.some(child => {
           if (child.href && isActive(child.href)) return true;
           if ((child as any).children) {
-            return (child as any).children.some((nestedChild: any) => 
+            return (child as any).children.some((nestedChild: any) =>
               nestedChild.href && isActive(nestedChild.href)
             );
           }
@@ -382,40 +404,36 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 setSidebarOpen(false);
               }
             }}
-            className={`group flex items-center w-full px-4 py-3.5 text-sm font-medium rounded-xl transition-all duration-300 relative overflow-hidden border ${
-              active
-                ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg shadow-blue-500/25 border-blue-400 animate-glow'
-                : 'text-slate-700 hover:bg-slate-100/80 hover:text-slate-900 border-transparent hover:border-blue-200'
-            } transform hover:scale-[1.02] active:scale-[0.98]`}
+            className={`group flex items-center w-full px-4 py-3.5 text-sm font-medium rounded-xl transition-all duration-300 relative overflow-hidden border ${active
+              ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg shadow-blue-500/25 border-blue-400 animate-glow'
+              : 'text-slate-700 hover:bg-slate-100/80 hover:text-slate-900 border-transparent hover:border-blue-200'
+              } transform hover:scale-[1.02] active:scale-[0.98]`}
             style={{ marginLeft: `${marginLeft}px` }}
           >
             <PulseGlow active={active}>
               <div
-                className={`mr-4 p-2 rounded-lg transition-all duration-300 ${
-                  active
-                    ? 'bg-white/20 shadow-inner'
-                    : 'bg-slate-100 group-hover:bg-white group-hover:shadow-sm'
-                }`}
+                className={`mr-4 p-2 rounded-lg transition-all duration-300 ${active
+                  ? 'bg-white/20 shadow-inner'
+                  : 'bg-slate-100 group-hover:bg-white group-hover:shadow-sm'
+                  }`}
               >
                 {Icon ? (
-                  <Icon className={`h-5 w-5 transition-all duration-300 ${
-                    active ? 'text-white' : 'text-slate-500 group-hover:text-blue-500'
-                  }`} />
+                  <Icon className={`h-5 w-5 transition-all duration-300 ${active ? 'text-white' : 'text-slate-500 group-hover:text-blue-500'
+                    }`} />
                 ) : (
                   <div className="h-5 w-5" />
                 )}
               </div>
             </PulseGlow>
-            
+
             {!collapsed && (
               <span className="flex-1 text-left font-medium">{item.name}</span>
             )}
-            
+
             {item.hasSubmenu && !collapsed && (
               <ChevronDown
-                className={`ml-auto h-4 w-4 transition-all duration-300 ${
-                  submenuVisible ? 'rotate-180' : ''
-                } ${active ? 'text-white/80' : 'text-slate-400 group-hover:text-slate-600'}`}
+                className={`ml-auto h-4 w-4 transition-all duration-300 ${submenuVisible ? 'rotate-180' : ''
+                  } ${active ? 'text-white/80' : 'text-slate-400 group-hover:text-slate-600'}`}
               />
             )}
 
@@ -439,23 +457,22 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           <div className="mt-1 space-y-1 animate-fade-in-up">
             {item.children.map((child, index) => {
               const childActive = child.href ? isActive(child.href) : false;
-              
+
               if ((child as any).hasSubmenu && (child as any).children) {
                 return renderNavigationItem(child as NavigationItem, level + 1);
               }
-              
+
               return (
                 <Link
                   key={child.name}
                   to={child.href || '#'}
-                  className={`block px-4 py-2.5 text-sm rounded-lg transition-all duration-300 transform hover:translate-x-1 ${
-                    childActive
-                      ? 'bg-blue-100 text-blue-800 font-medium border-l-4 border-blue-500'
-                      : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
-                  }`}
-                  style={{ 
+                  className={`block px-4 py-2.5 text-sm rounded-lg transition-all duration-300 transform hover:translate-x-1 ${childActive
+                    ? 'bg-blue-100 text-blue-800 font-medium border-l-4 border-blue-500'
+                    : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                    }`}
+                  style={{
                     marginLeft: `${(level + 1) * 4}px`,
-                    animationDelay: `${index * 50}ms` 
+                    animationDelay: `${index * 50}ms`
                   }}
                   onClick={() => setSidebarOpen(false)}
                 >
@@ -472,7 +489,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 relative overflow-hidden">
       <FloatingParticles />
-      
+
       {sidebarOpen && (
         <div
           className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 lg:hidden animate-fade-in"
@@ -483,14 +500,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       {/* Enhanced Sidebar */}
       <div
         ref={sidebarRef}
-        className={`fixed inset-y-0 left-0 z-50 ${
-          collapsed ? 'w-20' : 'w-72'
-        } bg-white/90 backdrop-blur-xl border-r border-slate-200/60 transform transition-all duration-500 ease-out lg:translate-x-0 lg:static lg:inset-0 sidebar-transition ${
-          sidebarOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full'
-        }`}
+        className={`fixed inset-y-0 left-0 z-50 ${collapsed ? 'w-20' : 'w-72'
+          } bg-white/90 backdrop-blur-xl border-r border-slate-200/60 transform transition-all duration-500 ease-out lg:translate-x-0 lg:static lg:inset-0 sidebar-transition ${sidebarOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full'
+          }`}
       >
         <FloatingParticles />
-        
+
         {/* Enhanced Sidebar Header */}
         <div className="flex items-center justify-between h-20 px-4 bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-indigo-700/20" />
@@ -529,8 +544,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         {/* Enhanced Navigation */}
         <nav className="mt-8 px-2 space-y-1 relative">
           {enhancedNavigation.map((item, index) => (
-            <div 
-              key={item.name} 
+            <div
+              key={item.name}
               style={{ animationDelay: `${index * 100}ms` }}
             >
               {renderNavigationItem(item)}
@@ -549,9 +564,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       {/* Enhanced Main Content */}
       <div className="flex flex-col flex-1 lg:mt-0 content-transition" ref={mainContentRef}>
         {/* Enhanced Top Bar */}
-        <div className={`bg-white/80 backdrop-blur-xl border-b border-gray-200/60 h-16 px-6 flex items-center justify-between sticky top-0 z-30 transition-all duration-300 ${
-          isScrolled ? 'shadow-lg' : 'shadow-sm'
-        }`}>
+        <div className={`bg-white/80 backdrop-blur-xl border-b border-gray-200/60 h-16 px-6 flex items-center justify-between sticky top-0 z-30 transition-all duration-300 ${isScrolled ? 'shadow-lg' : 'shadow-sm'
+          }`}>
           <div className="flex items-center justify-between h-16 w-full">
             <div className="flex items-center mr-20">
               <RippleButton>
@@ -562,7 +576,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   <Menu className="h-6 w-6" />
                 </button>
               </RippleButton>
-              
+
               <div className="animate-fade-in-up">
                 <h1 className="text-2xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
                   {enhancedNavigation.find(item => item.href && isActive(item.href))?.name || 'Dashboard'}

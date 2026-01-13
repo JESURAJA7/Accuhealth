@@ -1,5 +1,3 @@
-
-
 export interface TBNotificationFormData {
   // Notification Info
   governorate: string;
@@ -74,4 +72,58 @@ export interface TBNotificationFormData {
   finalOutcome: string;
   finalOutcomeDate: string;
   attachments: File[];
+}
+
+export interface HEVNotificationFormData {
+  // Notification Info
+  governorate: string;
+  wilayat: string;
+  institution: string;
+  reportingDate: string;
+
+  // Patient Info
+  patientId: string;
+  civilId: string;
+  expiryDate: string;
+  dob: string;
+  age: string;
+  term: string;
+  passportNo: string;
+  nationality: string;
+  firstName: string;
+  secondName: string;
+  thirdName: string;
+  fourthName: string;
+  gender: string;
+  tribe: string;
+  sheikhName: string;
+  mobileNo: string;
+  nextOfKinMobile: string;
+
+  // Address
+  patientGovernorate: string;
+  patientWilayat: string;
+  village: string;
+  subLocality: string;
+
+  // Clinical
+  symptoms: {
+    name: string;
+    value: string; // Yes/No
+    duration: string;
+  }[];
+
+  // Lab / HEV Testing
+  hevIgM: string;
+  hevIgG: string;
+  hevPcr: string;
+  hevPcrValue: string;
+
+  // Classification
+  alt: string;
+  ast: string;
+
+  // Outcome
+  outcome: string;
+  remarks: string;
 }

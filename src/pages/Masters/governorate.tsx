@@ -1,44 +1,59 @@
 import React, { useState, useEffect } from 'react';
 import { Plus } from 'lucide-react';
-import RoleModal from '../../components/RoleModal'; // Make sure this import path is correct
+import GovernorateModal from '../../components/GovernorateModal';
 
-interface Role {
+interface GovernorateData {
   id: number;
   code: string;
-  name: string;
-  description: string;
+  governorate: string;
   isActive: boolean;
 }
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-const Roles: React.FC = () => {
-  const [roles, setRoles] = useState<Role[]>([
+const Governorate: React.FC = () => {
+  const [governorates, setGovernorates] = useState<GovernorateData[]>([
     {
       id: 1,
       code: '1001',
-      name: 'admin',
-      description: 'test',
+      governorate: 'Muscut',
       isActive: true
     },
     {
       id: 2,
       code: '1002',
-      name: 'user',
-      description: 'test',
+      governorate: 'Seeb',
+      isActive: true
+    },
+    {
+      id: 3,
+      code: '1003',
+      governorate: 'Muttrah',
+      isActive: true
+    },
+    {
+      id: 4,
+      code: '1004',
+      governorate: 'Al Amerat',
+      isActive: true
+    },
+    {
+      id: 5,
+      code: '1005',
+      governorate: 'Adam',
       isActive: true
     }
   ]);
-  const [showRoleModal, setShowRoleModal] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    fetchRoles();
+    fetchGovernorates();
   }, []);
 
-  const fetchRoles = async () => {
+  const fetchGovernorates = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`${API_URL}/roles`, {
+      const response = await fetch(`${API_URL}/masters/governorates`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -47,37 +62,39 @@ const Roles: React.FC = () => {
 
       if (response.ok) {
         const data = await response.json();
-        setRoles(data);
+        setGovernorates(data);
       }
     } catch (error) {
-      console.error('Error fetching roles:', error);
-      // Keep mock data if API fails
+      console.error('Error fetching governorates:', error);
     }
   };
 
-  const handleAddRole = () => {
-    setShowRoleModal(true);
+  const handleAddClick = () => {
+    setShowModal(true);
   };
 
-  const handleRoleSubmit = async (roleData: Omit<Role, 'id'>) => {
+  const handleSubmit = async (data: any) => {
     try {
+      // Optimistic update
+      const newGov = { ...data, id: Date.now() };
+      setGovernorates([...governorates, newGov]);
+
       const token = localStorage.getItem('token');
-      const response = await fetch(`${API_URL}/masters/roles`, {
+      const response = await fetch(`${API_URL}/masters/governorates`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(roleData)
+        body: JSON.stringify(data)
       });
 
       if (response.ok) {
-        const newRole = await response.json();
-        setRoles([...roles, newRole]);
-        setShowRoleModal(false);
+        // Handle success
       }
+      setShowModal(false);
     } catch (error) {
-      console.error('Error adding role:', error);
+      console.error('Error adding governorate:', error);
     }
   };
 
@@ -87,10 +104,10 @@ const Roles: React.FC = () => {
         {/* Header */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
           <div className="flex items-center justify-between p-6 border-b border-gray-200">
-            <h1 className="text-xl font-semibold text-gray-800">Roles</h1>
-            <button 
-              onClick={handleAddRole}
-              className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md flex items-center gap-2 transition-colors duration-200"
+            <h1 className="text-xl font-semibold text-gray-800">Governorate</h1>
+            <button
+              onClick={handleAddClick}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md flex items-center gap-2 transition-colors duration-200 shadow-sm"
             >
               <Plus className="h-4 w-4" />
               Add
@@ -101,36 +118,31 @@ const Roles: React.FC = () => {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="bg-blue-500 text-white">
-                  <th className="px-6 py-4 text-left text-sm font-medium">S.No</th>
-                  <th className="px-6 py-4 text-left text-sm font-medium">Code</th>
-                  <th className="px-6 py-4 text-left text-sm font-medium">Name</th>
-                  <th className="px-6 py-4 text-left text-sm font-medium">Description</th>
+                <tr className="bg-[#3b82f6] text-white">
+                  <th className="px-6 py-4 text-left text-sm font-medium border-r border-blue-400 last:border-r-0">S.No</th>
+                  <th className="px-6 py-4 text-left text-sm font-medium border-r border-blue-400 last:border-r-0">Code</th>
+                  <th className="px-6 py-4 text-left text-sm font-medium border-r border-blue-400 last:border-r-0">Governorate</th>
                   <th className="px-6 py-4 text-left text-sm font-medium">IsActive</th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {roles.map((role, index) => (
-                  <tr key={role.id} className="hover:bg-gray-50 transition-colors duration-150">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                {governorates.map((gov, index) => (
+                  <tr key={gov.id} className="hover:bg-gray-50 transition-colors duration-150 border-b border-gray-100">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 border-r border-gray-100 last:border-r-0">
                       {index + 1}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {role.code}
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 border-r border-gray-100 last:border-r-0">
+                      {gov.code}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {role.name}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {role.description}
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 border-r border-gray-100 last:border-r-0">
+                      {gov.governorate}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
-                      <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
-                        role.isActive 
-                          ? 'bg-green-100 text-green-800' 
-                          : 'bg-red-100 text-red-800'
-                      }`}>
-                        {role.isActive ? 'yes' : 'no'}
+                      <span className={`inline-flex px-2 py-1 text-xs font-medium ${gov.isActive
+                          ? 'text-green-600'
+                          : 'text-red-600'
+                        }`}>
+                        {gov.isActive ? 'yes' : 'no'}
                       </span>
                     </td>
                   </tr>
@@ -140,22 +152,22 @@ const Roles: React.FC = () => {
           </div>
 
           {/* Empty State */}
-          {roles.length === 0 && (
+          {governorates.length === 0 && (
             <div className="text-center py-12">
-              <p className="text-gray-500">No roles found</p>
+              <p className="text-gray-500">No data found</p>
             </div>
           )}
         </div>
       </div>
 
-      {/* Role Modal */}
-      <RoleModal
-        isOpen={showRoleModal}
-        onClose={() => setShowRoleModal(false)}
-        onSubmit={handleRoleSubmit}
+      {/* Governorate Modal */}
+      <GovernorateModal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        onSubmit={handleSubmit}
       />
     </div>
   );
 };
 
-export default Roles;
+export default Governorate;

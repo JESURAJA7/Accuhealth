@@ -795,13 +795,14 @@ const ARINotification: React.FC = () => {
 
                   return (
                     <React.Fragment key={step.id}>
-                      <div className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 ${
-                        isActive
-                          ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/25'
-                          : isCompleted
-                          ? 'bg-green-100 text-green-700'
-                          : 'bg-slate-100 text-slate-600'
-                      }`}>
+                      <div
+                        onClick={() => setCurrentStep(index)}
+                        className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 cursor-pointer ${isActive
+                            ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/25'
+                            : isCompleted
+                              ? 'bg-green-100 text-green-700 hover:bg-green-200'
+                              : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                          }`}>
                         <Icon className="h-5 w-5" />
                         <span className="font-medium text-sm hidden sm:block">{step.title}</span>
                       </div>

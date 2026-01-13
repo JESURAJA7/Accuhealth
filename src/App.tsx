@@ -24,6 +24,23 @@ import ARIListing from './pages/ARI/ARIListing';
 import ARINotification from './pages/ARI/ARINotification';
 import PolioCaseListing from './pages/Polio/PolioCaseListing';
 import PolioInvestigation from './pages/Polio/PolioInvestigation';
+import HEVNotification from './pages/HEV/HEVNotification';
+import HemorrhagicNotification from './pages/Hemorrhagic ds/HemorrhagicNotification';
+import NewEntry from './pages/Hemorrhagic ds/NewEntry';
+import DoseNumber from './pages/Masters/dosenumber';
+import Education from './pages/Masters/Education';
+import Governorate from './pages/Masters/governorate';
+import Wilayat from './pages/Masters/Wilayat';
+import GovernorateVaccinated from './pages/Masters/GovernorateVaccinated';
+import Institution from './pages/Masters/Institution';
+import InstitutionPlace from './pages/Masters/InstitutionPlace';
+import Nationality from './pages/Masters/Nationality';
+import Occupation from './pages/Masters/Occupation';
+import Source from './pages/Masters/Source';
+import SiteOfInjection from './pages/Masters/SiteOfInjection';
+import Treatment from './pages/Masters/Treatment';
+import VaccineManufacturer from './pages/Masters/VaccineManufacturer';
+import VaccineName from './pages/Masters/VaccineName';
 
 function App() {
   return (
@@ -233,6 +250,210 @@ function App() {
                 <ProtectedRoute>
                   <Layout>
                     <PolioInvestigation />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+
+
+
+            {/* Hemorrhagic Routes */}
+            <Route
+              path="/hemorrhagic-new-entry"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <NewEntry />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/hemorrhagic-notification-listing"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <HemorrhagicNotification />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+
+            {/* HEV Routes */}
+            <Route
+              path="/hev-notification"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <HEVNotification />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Dose Number Routes */}
+            <Route
+              path="/dose-number"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <DoseNumber />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Education Routes */}
+            <Route
+              path="/education"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <Education />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Governorate Routes */}
+            <Route
+              path="/governorate"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <Governorate />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Wilayat Routes */}
+            <Route
+              path="/wilayat"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <Wilayat />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Governorate Vaccinated Routes */}
+            <Route
+              path="/governorate-vaccinated"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <GovernorateVaccinated />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Institution Routes */}
+            <Route
+              path="/institution"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <Institution />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Institution Place Routes */}
+            <Route
+              path="/institution-place"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <InstitutionPlace />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Nationality Routes */}
+            <Route
+              path="/nationality"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <Nationality />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Occupation Routes */}
+            <Route
+              path="/occupation"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <Occupation />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Source Routes */}
+            <Route
+              path="/source"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <Source />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Site of Injection Routes */}
+            <Route
+              path="/site-of-injection"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <SiteOfInjection />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Treatment Routes */}
+            <Route
+              path="/treatment"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <Treatment />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Vaccine Manufacturer Routes */}
+            <Route
+              path="/vaccine-manufacturer"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <VaccineManufacturer />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Vaccine Name Routes */}
+            <Route
+              path="/vaccine-name"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <VaccineName />
                   </Layout>
                 </ProtectedRoute>
               }
