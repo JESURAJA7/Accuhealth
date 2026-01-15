@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import { ArrowLeft, Calendar, User, FileText, Activity, TestTube, ChevronRight, ChevronLeft, Save, X } from 'lucide-react';
 import type { TBNotificationFormData } from '../../types/index';
 import FileUpload from '../../components/FileUpload/FileUpload';
+import { API_BASE_URL } from '../../config';
 
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+// const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
 const TBNotification: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(0);
@@ -190,7 +191,7 @@ const TBNotification: React.FC = () => {
         return;
       }
 
-      const response = await fetch(`${API_URL}/tb`, {
+      const response = await fetch(`${API_BASE_URL}/api/tb`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -1486,10 +1487,10 @@ const TBNotification: React.FC = () => {
                   <div
                     onClick={() => setCurrentStep(index)}
                     className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 cursor-pointer ${isActive
-                        ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/25'
-                        : isCompleted
-                          ? 'bg-green-100 text-green-700 hover:bg-green-200'
-                          : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                      ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/25'
+                      : isCompleted
+                        ? 'bg-green-100 text-green-700 hover:bg-green-200'
+                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                       }`}>
                     <Icon className="h-5 w-5" />
                     <span className="font-medium text-sm hidden sm:block">{step.title}</span>

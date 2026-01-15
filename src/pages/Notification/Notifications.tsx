@@ -58,7 +58,9 @@ interface Notification {
   work_status?: string;
 }
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+import { API_BASE_URL } from '../../config';
+
+// const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
 const Notifications: React.FC = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -75,7 +77,7 @@ const Notifications: React.FC = () => {
   const fetchNotifications = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`${API_URL}/notifications`, {
+      const response = await fetch(`${API_BASE_URL}/api/notifications`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'

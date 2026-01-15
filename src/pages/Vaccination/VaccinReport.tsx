@@ -15,8 +15,11 @@ import {
     MoreVertical
 } from 'lucide-react';
 
-const API_URL = import.meta.env.API_URL || 'http://localhost:3001/api';
-console.log('API_URL:', API_URL);
+import { API_BASE_URL } from '../../config';
+
+// const API_URL = import.meta.env.API_URL || 'http://localhost:3001/api';
+// console.log('API_URL:', API_URL);
+
 
 interface Role {
     id: number;
@@ -45,7 +48,7 @@ const VaccinReport: React.FC = () => {
     const fetchRoles = async () => {
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch(`${API_URL}/vaccination/roles`, {
+            const response = await fetch(`${API_BASE_URL}/api/vaccination/roles`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
@@ -213,7 +216,7 @@ const VaccinReport: React.FC = () => {
                             }}
                         >
                             <Plus className="h-4 w-4" />
-                            Add 
+                            Add
                         </button>
                     </div>
                 </div>

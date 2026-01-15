@@ -1,13 +1,8 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Calendar, User, FileText, Activity, TestTube, ChevronRight, ChevronLeft, Save, X } from 'lucide-react';
+import { ArrowLeft, Activity, TestTube, ChevronRight, ChevronLeft, Save, User, FileText } from 'lucide-react';
 import type { HEVNotificationFormData } from '../../types/index';
-// import FileUpload from '../../components/FileUpload/FileUpload'; // Assuming this exists or I should comment it out if I'm not sure, but TB uses it.
 
-import { API_BASE_URL } from '../../config';
-
-// const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
-
-const HEVNotification: React.FC = () => {
+const HepatitisNotification: React.FC<{ type: 'HAV' | 'HBV' | 'HCV' | 'HEV' }> = ({ type }) => {
     const [currentStep, setCurrentStep] = useState(0);
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState<HEVNotificationFormData>({
@@ -75,7 +70,7 @@ const HEVNotification: React.FC = () => {
             id: 'lab-investigation',
             title: 'Lab Investigation',
             icon: TestTube,
-            description: 'HEV Testing'
+            description: `${type} Testing`
         },
         {
             id: 'classification-outcome',
@@ -115,8 +110,8 @@ const HEVNotification: React.FC = () => {
         setLoading(true);
         try {
             // Placeholder for submission logic
-            console.log('Submitting HEV Data:', formData);
-            alert('HEV Notification saved (Simulation)');
+            console.log(`Submitting ${type} Data:`, formData);
+            alert(`${type} Notification saved (Simulation)`);
             window.history.back();
         } catch (error) {
             console.error('Error:', error);
@@ -129,7 +124,7 @@ const HEVNotification: React.FC = () => {
     const renderPatientInfo = () => (
         <div className="space-y-8">
             <div className="text-center mb-8">
-                <h2 className="text-2xl font-bold text-slate-900 mb-2">HEV Notification</h2>
+                <h2 className="text-2xl font-bold text-slate-900 mb-2">{type} Notification</h2>
                 <p className="text-yellow-600">[Patient Information & Basic Details]</p>
             </div>
 
@@ -275,12 +270,12 @@ const HEVNotification: React.FC = () => {
         <div className="space-y-8">
             <div className="text-center mb-8">
                 <h2 className="text-2xl font-bold text-slate-900 mb-2">Lab Investigation</h2>
-                <p className="text-yellow-600">HEV Testing</p>
+                <p className="text-yellow-600">{type} Testing</p>
             </div>
 
             <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-4">
-                    <h5 className="font-semibold text-lg border-b pb-2">HEV IgM</h5>
+                    <h5 className="font-semibold text-lg border-b pb-2">{type} IgM</h5>
                     <div className="flex gap-4">
                         <label className="flex items-center space-x-2">
                             <input type="radio" name="hevIgM" value="Positive" checked={formData.hevIgM === 'Positive'} onChange={handleInputChange} />
@@ -294,7 +289,7 @@ const HEVNotification: React.FC = () => {
                 </div>
 
                 <div className="space-y-4">
-                    <h5 className="font-semibold text-lg border-b pb-2">HEV RNA PCR</h5>
+                    <h5 className="font-semibold text-lg border-b pb-2">{type} RNA PCR</h5>
                     <div className="flex gap-4 items-center">
                         <label className="flex items-center space-x-2">
                             <input type="radio" name="hevPcr" value="Positive" checked={formData.hevPcr === 'Positive'} onChange={handleInputChange} />
@@ -393,7 +388,7 @@ const HEVNotification: React.FC = () => {
                     <button onClick={() => window.history.back()} className="p-2 hover:bg-slate-100 rounded-lg">
                         <ArrowLeft className="h-6 w-6 text-slate-600" />
                     </button>
-                    <h1 className="text-2xl font-bold text-slate-800">HEV Notification Entry</h1>
+                    <h1 className="text-2xl font-bold text-slate-800">{type} Notification Entry</h1>
                 </div>
             </div>
 
@@ -468,4 +463,4 @@ const HEVNotification: React.FC = () => {
     );
 };
 
-export default HEVNotification;
+export default HepatitisNotification;

@@ -278,7 +278,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           icon: FlaskConical,
           hasSubmenu: true,
           children: [
-            { name: 'Notification', href: '/hev-notification' },
+            { name: 'HAV', href: '/hav-notification' },
+            { name: 'HBV', href: '/hbv-notification' },
+            { name: 'HCV', href: '/hcv-notification' },
           ]
         },
       ],

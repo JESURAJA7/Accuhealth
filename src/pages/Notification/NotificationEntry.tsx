@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Calendar, User, Phone, MapPin, Building, FileText, Activity, TestTube, ChevronRight, ChevronLeft, Save, Upload, X, AlertCircle, CheckCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from '../../config';
 
 interface NotificationFormData {
   // Notification Info
@@ -8,7 +9,7 @@ interface NotificationFormData {
   wilayat: string;
   institution: string;
   reportingDate: string;
-  
+
   // Patient Info
   patientId: string;
   civilId: string;
@@ -31,7 +32,7 @@ interface NotificationFormData {
   patientWilayat: string;
   gender: string;
   workStatus: string;
-  
+
   // Source Details
   treatment: string;
   treatmentStartDate: string;
@@ -40,7 +41,7 @@ interface NotificationFormData {
   outcome: string;
   outcomeDate: string;
   remarks: string;
-  
+
   // History Details
   dateOfOnset: string;
   symptoms: string[];
@@ -79,7 +80,7 @@ const NotificationEntry: React.FC = () => {
     wilayat: '',
     institution: '',
     reportingDate: '',
-    
+
     // Patient Info
     patientId: '',
     civilId: '',
@@ -102,7 +103,7 @@ const NotificationEntry: React.FC = () => {
     patientWilayat: '',
     gender: '',
     workStatus: '',
-    
+
     // Source Details
     treatment: '',
     treatmentStartDate: '',
@@ -111,7 +112,7 @@ const NotificationEntry: React.FC = () => {
     outcome: '',
     outcomeDate: '',
     remarks: '',
-    
+
     // History Details
     dateOfOnset: '',
     symptoms: [],
@@ -179,14 +180,14 @@ const NotificationEntry: React.FC = () => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
     setError(''); // Clear any existing errors
-    
+
     if (type === 'checkbox') {
       const checked = (e.target as HTMLInputElement).checked;
       if (name === 'symptoms' || name === 'species' || name === 'stages') {
         const checkboxValue = (e.target as HTMLInputElement).value;
         setFormData(prev => ({
           ...prev,
-          [name]: checked 
+          [name]: checked
             ? [...(prev[name as keyof typeof prev] as string[]), checkboxValue]
             : (prev[name as keyof typeof prev] as string[]).filter(s => s !== checkboxValue)
         }));
@@ -209,20 +210,20 @@ const NotificationEntry: React.FC = () => {
     const validFiles = files.filter(file => {
       const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
       const maxSize = 10 * 1024 * 1024; // 10MB
-      
+
       if (!validTypes.includes(file.type)) {
         setError(`File ${file.name} is not a supported format`);
         return false;
       }
-      
+
       if (file.size > maxSize) {
         setError(`File ${file.name} is too large (max 10MB)`);
         return false;
       }
-      
+
       return true;
     });
-    
+
     setAttachments(prev => [...prev, ...validFiles]);
   };
 
@@ -242,12 +243,12 @@ const NotificationEntry: React.FC = () => {
 
     const required = requiredFields[step] || [];
     const missing = required.filter(field => !formData[field as keyof NotificationFormData]);
-    
+
     if (missing.length > 0) {
       setError(`Please fill in required fields: ${missing.join(', ')}`);
       return false;
     }
-    
+
     return true;
   };
 
@@ -274,16 +275,16 @@ const NotificationEntry: React.FC = () => {
 
     setLoading(true);
     setError('');
-    
+
     try {
       const token = localStorage.getItem('token');
-      
+
       if (!token) {
         setError('Authentication required. Please log in again.');
         return;
       }
 
-      const response = await fetch('http://localhost:3001/api/notifications', {
+      const response = await fetch(`${API_BASE_URL}/api/notifications`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -296,12 +297,12 @@ const NotificationEntry: React.FC = () => {
 
       if (response.ok) {
         setSuccess(`Notification created successfully! ID: ${data.notificationId}`);
-        
+
         // Handle file uploads if there are attachments
         if (attachments.length > 0 && data.id) {
           await uploadAttachments(data.id);
         }
-        
+
         // Redirect after a short delay to show success message
         setTimeout(() => {
           navigate('/notifications');
@@ -324,12 +325,12 @@ const NotificationEntry: React.FC = () => {
     try {
       const token = localStorage.getItem('token');
       const formData = new FormData();
-      
+
       attachments.forEach(file => {
         formData.append('attachments', file);
       });
 
-      const response = await fetch(`http://localhost:3001/api/notifications/${notificationId}/attachments`, {
+      const response = await fetch(`${API_BASE_URL}/api/notifications/${notificationId}/attachments`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -1131,7 +1132,7 @@ const NotificationEntry: React.FC = () => {
               <div className="text-center">
                 <Upload className="h-12 w-12 text-slate-400 mx-auto mb-4" />
                 <p className="text-sm text-slate-600 mb-4">Max. file size: 10MB</p>
-                
+
                 <div className="space-y-4">
                   <input
                     type="file"
@@ -1356,7 +1357,7 @@ const NotificationEntry: React.FC = () => {
       <div className="bg-white/80 backdrop-blur-xl shadow-sm border-b border-slate-200/60 px-6 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <button 
+            <button
               onClick={() => navigate('/notifications')}
               className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
             >
@@ -1394,22 +1395,21 @@ const NotificationEntry: React.FC = () => {
               Step {currentStep + 1} of {steps.length}
             </span>
           </div>
-          
+
           <div className="flex items-center space-x-2 mb-6 overflow-x-auto">
             {steps.map((step, index) => {
               const Icon = step.icon;
               const isActive = index === currentStep;
               const isCompleted = index < currentStep;
-              
+
               return (
                 <React.Fragment key={step.id}>
-                  <div className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 whitespace-nowrap ${
-                    isActive 
-                      ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/25' 
-                      : isCompleted
+                  <div className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 whitespace-nowrap ${isActive
+                    ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/25'
+                    : isCompleted
                       ? 'bg-green-100 text-green-700'
                       : 'bg-slate-100 text-slate-600'
-                  }`}>
+                    }`}>
                     <Icon className="h-5 w-5" />
                     <span className="font-medium text-sm">{step.title}</span>
                   </div>
@@ -1422,7 +1422,7 @@ const NotificationEntry: React.FC = () => {
           </div>
 
           <div className="w-full bg-slate-200 rounded-full h-2">
-            <div 
+            <div
               className="bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full transition-all duration-300"
               style={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
             ></div>

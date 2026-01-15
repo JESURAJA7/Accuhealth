@@ -25,11 +25,12 @@ import ARINotification from './pages/ARI/ARINotification';
 import PolioCaseListing from './pages/Polio/PolioCaseListing';
 import PolioInvestigation from './pages/Polio/PolioInvestigation';
 import HEVNotification from './pages/HEV/HEVNotification';
+import HepatitisNotification from './pages/HEV/HepatitisNotification';
 import HemorrhagicNotification from './pages/Hemorrhagic ds/HemorrhagicNotification';
 import NewEntry from './pages/Hemorrhagic ds/NewEntry';
-import DoseNumber from './pages/Masters/dosenumber';
+import DoseNumber from './pages/Masters/DoseNumber';
 import Education from './pages/Masters/Education';
-import Governorate from './pages/Masters/governorate';
+import Governorate from './pages/Masters/Governorate';
 import Wilayat from './pages/Masters/Wilayat';
 import GovernorateVaccinated from './pages/Masters/GovernorateVaccinated';
 import Institution from './pages/Masters/Institution';
@@ -286,6 +287,37 @@ function App() {
                 <ProtectedRoute>
                   <Layout>
                     <HEVNotification />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            {/* Hepatitis Routes */}
+            <Route
+              path="/hav-notification"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <HepatitisNotification type="HAV" />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/hbv-notification"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <HepatitisNotification type="HBV" />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/hcv-notification"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <HepatitisNotification type="HCV" />
                   </Layout>
                 </ProtectedRoute>
               }
