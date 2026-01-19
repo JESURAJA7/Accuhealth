@@ -10,7 +10,9 @@ interface SiteOfInjectionData {
     isActive: boolean;
 }
 
-const API_URL = import.meta.env.VITE_API_URL;
+import { API_BASE_URL } from '../../config';
+
+const API_URL = API_BASE_URL;
 
 const SiteOfInjection: React.FC = () => {
     const [items, setItems] = useState<SiteOfInjectionData[]>([
@@ -135,8 +137,8 @@ const SiteOfInjection: React.FC = () => {
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm">
                                             <span className={`inline-flex px-2 py-1 text-xs font-medium ${item.isActive
-                                                    ? 'text-green-600'
-                                                    : 'text-red-600'
+                                                ? 'text-green-600'
+                                                : 'text-red-600'
                                                 }`}>
                                                 {item.isActive ? 'yes' : 'no'}
                                             </span>

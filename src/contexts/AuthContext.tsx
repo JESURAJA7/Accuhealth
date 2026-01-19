@@ -14,7 +14,9 @@ interface AuthContextType {
   isAuthenticated: boolean;
 }
 
-const API_URL = import.meta.env.VITE_API_URL; 
+import { API_BASE_URL } from '../config';
+
+const API_URL = API_BASE_URL;
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -25,7 +27,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     const token = localStorage.getItem('token');
     const userData = localStorage.getItem('user');
-    
+
     if (token && userData) {
       setUser(JSON.parse(userData));
       setIsAuthenticated(true);

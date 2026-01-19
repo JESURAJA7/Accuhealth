@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import UserEntryModal from '../components/UserEntryModal';
-import { 
-  ArrowLeft, 
-  Plus, 
-  Edit, 
-  Search, 
-  Filter, 
-  MoreVertical, 
-  Eye, 
-  Trash2, 
-  UserCheck, 
+import {
+  ArrowLeft,
+  Plus,
+  Edit,
+  Search,
+  Filter,
+  MoreVertical,
+  Eye,
+  Trash2,
+  UserCheck,
   UserX,
   Mail,
   Phone,
@@ -30,7 +30,9 @@ interface User {
   role?: string;
 }
 
-const API_URL = import.meta.env.VITE_API_URL;
+import { API_BASE_URL } from '../config';
+
+const API_URL = API_BASE_URL;
 
 const UserManagement: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -60,7 +62,7 @@ const UserManagement: React.FC = () => {
         // Enhance data with additional fields
         const enhancedData = data.map((user: User) => ({
           ...user,
-         
+
           role: user.description && user.description.includes('admin') ? 'Administrator' : 'User'
         }));
         setUsers(enhancedData);
@@ -87,8 +89,8 @@ const UserManagement: React.FC = () => {
 
       if (response.ok) {
         // Update local state
-        setUsers(prevUsers => 
-          prevUsers.map(user => 
+        setUsers(prevUsers =>
+          prevUsers.map(user =>
             user.id === userId ? { ...user, is_active: isActive } : user
           )
         );
@@ -135,16 +137,16 @@ const UserManagement: React.FC = () => {
 
   const filteredUsers = users.filter(user => {
     const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         user.email.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesFilter = filterStatus === 'all' || 
-                         (filterStatus === 'active' && user.is_active) ||
-                         (filterStatus === 'inactive' && !user.is_active);
+      user.email.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesFilter = filterStatus === 'all' ||
+      (filterStatus === 'active' && user.is_active) ||
+      (filterStatus === 'inactive' && !user.is_active);
     return matchesSearch && matchesFilter;
   });
 
   const handleSelectUser = (userId: number) => {
-    setSelectedUsers(prev => 
-      prev.includes(userId) 
+    setSelectedUsers(prev =>
+      prev.includes(userId)
         ? prev.filter(id => id !== userId)
         : [...prev, userId]
     );
@@ -152,8 +154,8 @@ const UserManagement: React.FC = () => {
 
   const handleSelectAll = () => {
     setSelectedUsers(
-      selectedUsers.length === filteredUsers.length 
-        ? [] 
+      selectedUsers.length === filteredUsers.length
+        ? []
         : filteredUsers.map(user => user.id)
     );
   };
@@ -194,7 +196,7 @@ const UserManagement: React.FC = () => {
             </div>
           </div>
         </div>
-        
+
         <div className="card p-6">
           <div className="flex items-center justify-between">
             <div>
@@ -208,7 +210,7 @@ const UserManagement: React.FC = () => {
             </div>
           </div>
         </div>
-        
+
         <div className="card p-6">
           <div className="flex items-center justify-between">
             <div>
@@ -222,7 +224,7 @@ const UserManagement: React.FC = () => {
             </div>
           </div>
         </div>
-        
+
         <div className="card p-6">
           <div className="flex items-center justify-between">
             <div>
@@ -253,7 +255,7 @@ const UserManagement: React.FC = () => {
                 className="input pl-10 w-full sm:w-80"
               />
             </div>
-            
+
             {/* Filter */}
             <select
               value={filterStatus}
@@ -265,7 +267,7 @@ const UserManagement: React.FC = () => {
               <option value="inactive">Inactive Only</option>
             </select>
           </div>
-          
+
           <div className="flex gap-3">
             {selectedUsers.length > 0 && (
               <button className="btn btn-secondary">
@@ -360,9 +362,8 @@ const UserManagement: React.FC = () => {
                           disabled={updatingUser === user.id}
                           className="sr-only peer"
                         />
-                        <div className={`relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 ${
-                          updatingUser === user.id ? 'opacity-50 cursor-not-allowed' : ''
-                        }`}></div>
+                        <div className={`relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 ${updatingUser === user.id ? 'opacity-50 cursor-not-allowed' : ''
+                          }`}></div>
                       </label>
                       <div className="flex items-center space-x-1">
                         {user.is_active ? (

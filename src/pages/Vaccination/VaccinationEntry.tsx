@@ -17,31 +17,33 @@ interface VaccinationFormData {
   patientId: string;
   governorate: string;
   wilayat: string;
-  
+
   // Vaccination Details
   vaccineType: string;
   vaccinationUnit: string;
   doseNumber: string;
   dateOfInjection: string;
   siteOfInjection: string;
-  
+
   // Batch Details
   batchNumber: string;
   manufacturer: string;
   batchExpiryDate: string;
-  
+
   // Syringe Details
   lotNumber: string;
   syringeManufacturer: string;
   syringeExpiryDate: string;
-  
+
   // Diluent Detail
   diluentLotNumber: string;
   diluentManufacturer: string;
   diluentExpiryDate: string;
 }
 
-const API_URL = import.meta.env.VITE_API_URL;
+import { API_BASE_URL } from '../../config';
+
+const API_URL = API_BASE_URL;
 
 const VaccinationEntry: React.FC = () => {
   const navigate = useNavigate();
@@ -62,24 +64,24 @@ const VaccinationEntry: React.FC = () => {
     patientId: '',
     governorate: '',
     wilayat: '',
-    
+
     // Vaccination Details
     vaccineType: '',
     vaccinationUnit: '',
     doseNumber: '',
     dateOfInjection: '',
     siteOfInjection: '',
-    
+
     // Batch Details
     batchNumber: '',
     manufacturer: '',
     batchExpiryDate: '',
-    
+
     // Syringe Details
     lotNumber: '',
     syringeManufacturer: '',
     syringeExpiryDate: '',
-    
+
     // Diluent Detail
     diluentLotNumber: '',
     diluentManufacturer: '',
@@ -678,7 +680,7 @@ const VaccinationEntry: React.FC = () => {
       <div className="bg-white/80 backdrop-blur-xl shadow-sm border-b border-slate-200/60 px-6 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <button 
+            <button
               onClick={() => navigate('/vaccination-listing')}
               className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
             >
@@ -701,22 +703,21 @@ const VaccinationEntry: React.FC = () => {
               Step {currentStep + 1} of {steps.length}
             </span>
           </div>
-          
+
           <div className="flex items-center space-x-2 mb-6 overflow-x-auto">
             {steps.map((step, index) => {
               const Icon = step.icon;
               const isActive = index === currentStep;
               const isCompleted = index < currentStep;
-              
+
               return (
                 <React.Fragment key={step.id}>
-                  <div className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 whitespace-nowrap ${
-                    isActive 
-                      ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/25' 
+                  <div className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 whitespace-nowrap ${isActive
+                      ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/25'
                       : isCompleted
-                      ? 'bg-green-100 text-green-700'
-                      : 'bg-slate-100 text-slate-600'
-                  }`}>
+                        ? 'bg-green-100 text-green-700'
+                        : 'bg-slate-100 text-slate-600'
+                    }`}>
                     <Icon className="h-5 w-5" />
                     <span className="font-medium text-sm">{step.title}</span>
                   </div>
@@ -729,7 +730,7 @@ const VaccinationEntry: React.FC = () => {
           </div>
 
           <div className="w-full bg-slate-200 rounded-full h-2">
-            <div 
+            <div
               className="bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full transition-all duration-300"
               style={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
             ></div>

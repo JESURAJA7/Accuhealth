@@ -33,7 +33,9 @@ interface Master {
   count?: number;
 }
 
-const API_URL = import.meta.env.VITE_API_URL;
+import { API_BASE_URL } from '../../config';
+
+const API_URL = API_BASE_URL;
 
 const Masters: React.FC = () => {
   const [masters, setMasters] = useState<Master[]>([]);

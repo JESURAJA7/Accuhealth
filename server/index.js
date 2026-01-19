@@ -17,8 +17,8 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 app.use(cors({
-  origin: ['http://localhost:5173','https://accuhealth.netlify.app', ],
-  methods: ['GET', 'POST', 'PUT', 'DELETE','PATCH', 'OPTIONS'],
+  origin: ['http://localhost:5173', 'https://accuhealth.netlify.app',],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   credentials: true,
 }));
 app.use(express.json());
@@ -40,6 +40,11 @@ app.use(fileUpload({
     fileSize: 10 * 1024 * 1024 // 10MB max file size
   }
 }));
+
+//health
+app.use('/api/health', (req, res) => {
+  res.json({ message: 'Health check passed' });
+});
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

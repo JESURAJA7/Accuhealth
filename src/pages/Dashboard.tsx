@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
 import { TrendingUp, TrendingDown, Users, MapPin, Activity, AlertTriangle, CheckCircle, Clock } from 'lucide-react';
 
-const API_URL= import.meta.env.VITE_API_URL; 
+import { API_BASE_URL } from '../config';
+const API_URL = API_BASE_URL;
 console.log('API URL:', API_URL);
 
 interface DashboardStats {
@@ -56,7 +57,7 @@ const Dashboard: React.FC = () => {
       const casesData = await casesRes.json();
       const regionsData = await regionsRes.json();
 
-      
+
       setStats(statsData);
       setCasesByGovernorate(casesData);
       setTopRegions(regionsData.slice(0, 5));
@@ -152,9 +153,8 @@ const Dashboard: React.FC = () => {
                   <div className={`w-8 h-8 ${card.bgColor} rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
                     <Icon className={`h-4 w-4 ${card.iconColor}`} />
                   </div>
-                  <div className={`flex items-center space-x-1 px-1.5 py-0.5 rounded-md text-xs font-medium ${
-                    card.trend === 'up' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
-                  }`}>
+                  <div className={`flex items-center space-x-1 px-1.5 py-0.5 rounded-md text-xs font-medium ${card.trend === 'up' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+                    }`}>
                     <TrendIcon className="h-2.5 w-2.5" />
                     <span>{card.change}</span>
                   </div>
@@ -188,26 +188,26 @@ const Dashboard: React.FC = () => {
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={casesByGovernorate} margin={{ top: 10, right: 20, left: 10, bottom: 40 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                <XAxis 
-                  dataKey="name" 
+                <XAxis
+                  dataKey="name"
                   tick={{ fontSize: 10, fill: '#64748b' }}
                   angle={-45}
                   textAnchor="end"
                   height={60}
                 />
                 <YAxis tick={{ fontSize: 10, fill: '#64748b' }} />
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: 'white', 
-                    border: '1px solid #e2e8f0', 
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: 'white',
+                    border: '1px solid #e2e8f0',
                     borderRadius: '8px',
                     boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
                     fontSize: '12px'
-                  }} 
+                  }}
                 />
-                <Bar 
-                  dataKey="cases" 
-                  fill="url(#blueGradient)" 
+                <Bar
+                  dataKey="cases"
+                  fill="url(#blueGradient)"
                   radius={[2, 2, 0, 0]}
                 />
                 <defs>
@@ -236,12 +236,11 @@ const Dashboard: React.FC = () => {
             {topRegions.map((region, index) => (
               <div key={index} className="flex items-center justify-between p-2 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors">
                 <div className="flex items-center space-x-2">
-                  <div className={`w-6 h-6 rounded-md flex items-center justify-center text-white font-bold text-xs ${
-                    index === 0 ? 'bg-gradient-to-r from-yellow-400 to-yellow-500' :
-                    index === 1 ? 'bg-gradient-to-r from-gray-400 to-gray-500' :
-                    index === 2 ? 'bg-gradient-to-r from-orange-400 to-orange-500' :
-                    'bg-gradient-to-r from-blue-400 to-blue-500'
-                  }`}>
+                  <div className={`w-6 h-6 rounded-md flex items-center justify-center text-white font-bold text-xs ${index === 0 ? 'bg-gradient-to-r from-yellow-400 to-yellow-500' :
+                      index === 1 ? 'bg-gradient-to-r from-gray-400 to-gray-500' :
+                        index === 2 ? 'bg-gradient-to-r from-orange-400 to-orange-500' :
+                          'bg-gradient-to-r from-blue-400 to-blue-500'
+                    }`}>
                     {index + 1}
                   </div>
                   <span className="font-medium text-slate-900 text-sm">{region.name}</span>
@@ -258,7 +257,7 @@ const Dashboard: React.FC = () => {
 
       {/* Additional Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-       
+
         {/* <div className="card p-4">
           <div className="flex items-center justify-between mb-4">
             <div>

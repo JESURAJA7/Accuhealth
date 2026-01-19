@@ -9,7 +9,9 @@ interface EducationData {
     isActive: boolean;
 }
 
-const API_URL = import.meta.env.VITE_API_URL;
+import { API_BASE_URL } from '../../config';
+
+const API_URL = API_BASE_URL;
 
 const Education: React.FC = () => {
     const [educations, setEducations] = useState<EducationData[]>([
@@ -133,8 +135,8 @@ const Education: React.FC = () => {
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm">
                                             <span className={`inline-flex px-2 py-1 text-xs font-medium ${edu.isActive
-                                                    ? 'text-green-600'
-                                                    : 'text-red-600'
+                                                ? 'text-green-600'
+                                                : 'text-red-600'
                                                 }`}>
                                                 {edu.isActive ? 'yes' : 'no'}
                                             </span>

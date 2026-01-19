@@ -10,7 +10,9 @@ interface Role {
   isActive: boolean;
 }
 
-const API_URL = import.meta.env.VITE_API_URL;
+import { API_BASE_URL } from '../../config';
+
+const API_URL = API_BASE_URL;
 
 const Roles: React.FC = () => {
   const [roles, setRoles] = useState<Role[]>([
@@ -88,7 +90,7 @@ const Roles: React.FC = () => {
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
           <div className="flex items-center justify-between p-6 border-b border-gray-200">
             <h1 className="text-xl font-semibold text-gray-800">Roles</h1>
-            <button 
+            <button
               onClick={handleAddRole}
               className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md flex items-center gap-2 transition-colors duration-200"
             >
@@ -125,11 +127,10 @@ const Roles: React.FC = () => {
                       {role.description}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
-                      <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
-                        role.isActive 
-                          ? 'bg-green-100 text-green-800' 
+                      <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${role.isActive
+                          ? 'bg-green-100 text-green-800'
                           : 'bg-red-100 text-red-800'
-                      }`}>
+                        }`}>
                         {role.isActive ? 'yes' : 'no'}
                       </span>
                     </td>
