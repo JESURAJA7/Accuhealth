@@ -13,6 +13,7 @@ import userRoutes from './routes/userRoutes.js';
 import masterRoutes from './routes/masterRoutes.js';
 import vaccinationRoutes from './routes/vaccination.js';
 import tbRoutes from './routes/TB/tbRoutes.js';
+import hevRoutes from './routes/hevRoutes.js';
 const app = express();
 const PORT = process.env.PORT || 3001;
 
@@ -33,6 +34,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/masters', masterRoutes);
 app.use('/api/vaccination', vaccinationRoutes);
 app.use('/api/tb', tbRoutes);
+app.use('/api/hev-notifications', hevRoutes);
 
 app.use(fileUpload({
   createParentPath: true,

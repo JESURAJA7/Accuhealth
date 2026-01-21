@@ -1,20 +1,18 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Calendar, User, FileText, Activity, TestTube, ChevronRight, ChevronLeft, Save, X } from 'lucide-react';
+import { ArrowLeft, User, FileText, Activity, TestTube, ChevronRight, ChevronLeft, Save } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import type { HEVNotificationFormData } from '../../types/index';
-// import FileUpload from '../../components/FileUpload/FileUpload'; // Assuming this exists or I should comment it out if I'm not sure, but TB uses it.
-
 import { API_BASE_URL } from '../../config';
 
-// const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
-
-const HEVNotification: React.FC = () => {
+const HEVEntry: React.FC = () => {
+    const navigate = useNavigate();
     const [currentStep, setCurrentStep] = useState(0);
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState<HEVNotificationFormData>({
-        governorate: '',
-        wilayat: '',
+        governorate: 'NORTH ASH SHARQIYAH',
+        wilayat: 'Ibra',
         institution: '',
-        reportingDate: '',
+        reportingDate: new Date().toISOString().split('T')[0],
         patientId: '',
         civilId: '',
         expiryDate: '',
@@ -59,38 +57,15 @@ const HEVNotification: React.FC = () => {
     });
 
     const steps = [
-        {
-            id: 'patient-info',
-            title: 'Patient Info',
-            icon: User,
-            description: 'Patient Information & Basic Details'
-        },
-        {
-            id: 'clinical-details',
-            title: 'Clinical Details',
-            icon: Activity,
-            description: 'Symptoms'
-        },
-        {
-            id: 'lab-investigation',
-            title: 'Lab Investigation',
-            icon: TestTube,
-            description: 'HEV Testing'
-        },
-        {
-            id: 'classification-outcome',
-            title: 'Classification & Outcome',
-            icon: FileText,
-            description: 'Liver Function Tests & Outcome'
-        }
+        { id: 'patient-info', title: 'Patient Info', icon: User, description: 'Patient Information & Basic Details' },
+        { id: 'clinical-details', title: 'Clinical Details', icon: Activity, description: 'Symptoms' },
+        { id: 'lab-investigation', title: 'Lab Investigation', icon: TestTube, description: 'HEV Testing' },
+        { id: 'classification-outcome', title: 'Classification & Outcome', icon: FileText, description: 'Liver Function Tests & Outcome' }
     ];
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }));
+        setFormData(prev => ({ ...prev, [name]: value }));
     };
 
     const handleSymptomChange = (index: number, field: 'value' | 'duration', val: string) => {
@@ -114,13 +89,27 @@ const HEVNotification: React.FC = () => {
     const handleSubmit = async () => {
         setLoading(true);
         try {
-            // Placeholder for submission logic
-            console.log('Submitting HEV Data:', formData);
-            alert('HEV Notification saved (Simulation)');
-            window.history.back();
+            const token = localStorage.getItem('token');
+            const response = await fetch(`${API_BASE_URL}/hev-notifications`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            });
+
+            if (response.ok) {
+                // Success
+                navigate('/hev-notification');
+            } else {
+                const errorData = await response.json();
+                console.error('API Error:', errorData);
+                alert(`Error saving notification: ${errorData.error || 'Unknown error'}`);
+            }
         } catch (error) {
-            console.error('Error:', error);
-            alert('Error saving notification');
+            console.error('Network Error:', error);
+            alert('Network error saving notification');
         } finally {
             setLoading(false);
         }
@@ -134,41 +123,43 @@ const HEVNotification: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {/* Institution Info - Readonly/Pre-filled as in template */}
                 <div className="space-y-2">
                     <label className="block text-sm font-medium text-slate-700">State <span className="text-red-500">*</span></label>
-                    <input type="text" className="w-full px-4 py-3 border border-slate-300 rounded-lg bg-slate-50" readOnly value="NORTH ASH SHARQIYAH" />
+                    <input type="text" className="w-full px-4 py-3 border border-slate-300 rounded-lg bg-slate-50" readOnly value={formData.governorate} />
                 </div>
                 <div className="space-y-2">
-                    <label className="block text-sm font-medium text-slate-700">Sub-Locality (Optional)</label>
+                    <label className="block text-sm font-medium text-slate-700">Sub-Locality</label>
                     <input type="text" className="w-full px-4 py-3 border border-slate-300 rounded-lg" name="subLocality" value={formData.subLocality} onChange={handleInputChange} />
                 </div>
                 <div className="space-y-2">
                     <label className="block text-sm font-medium text-slate-700">Locality <span className="text-red-500">*</span></label>
-                    <input type="text" className="w-full px-4 py-3 border border-slate-300 rounded-lg bg-slate-50" readOnly value="Ibra" />
+                    <input type="text" className="w-full px-4 py-3 border border-slate-300 rounded-lg bg-slate-50" readOnly value={formData.wilayat} />
                 </div>
                 <div className="space-y-2">
                     <label className="block text-sm font-medium text-slate-700">Reporting Date <span className="text-red-500">*</span></label>
                     <input type="date" name="reportingDate" value={formData.reportingDate} onChange={handleInputChange} className="w-full px-4 py-3 border border-slate-300 rounded-lg" />
                 </div>
+                 <div className="space-y-2">
+                    <label className="block text-sm font-medium text-slate-700">Patient ID <span className="text-red-500">*</span></label>
+                    <input type="text" name="patientId" value={formData.patientId} onChange={handleInputChange} className="w-full px-4 py-3 border border-slate-300 rounded-lg" required />
+                </div>
             </div>
 
-            <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+            <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden mt-6">
                 <div className="bg-slate-50 px-6 py-4 border-b border-slate-200">
                     <h5 className="text-lg font-semibold text-slate-900">Patient Information</h5>
                 </div>
                 <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     <div className="space-y-2">
-                        <label className="block text-sm font-medium text-slate-700">National ID <span className="text-red-500">*</span></label>
+                        <label className="block text-sm font-medium text-slate-700">National ID</label>
                         <input type="text" name="civilId" value={formData.civilId} onChange={handleInputChange} className="w-full px-4 py-3 border border-slate-300 rounded-lg" />
                     </div>
-
                     <div className="space-y-2">
-                        <label className="block text-sm font-medium text-slate-700">First Name <span className="text-red-500">*</span></label>
+                        <label className="block text-sm font-medium text-slate-700">First Name</label>
                         <input type="text" name="firstName" value={formData.firstName} onChange={handleInputChange} className="w-full px-4 py-3 border border-slate-300 rounded-lg" />
                     </div>
                     <div className="space-y-2">
-                        <label className="block text-sm font-medium text-slate-700">Second Name <span className="text-red-500">*</span></label>
+                        <label className="block text-sm font-medium text-slate-700">Second Name</label>
                         <input type="text" name="secondName" value={formData.secondName} onChange={handleInputChange} className="w-full px-4 py-3 border border-slate-300 rounded-lg" />
                     </div>
                     <div className="space-y-2">
@@ -179,18 +170,16 @@ const HEVNotification: React.FC = () => {
                         <label className="block text-sm font-medium text-slate-700">Fourth Name</label>
                         <input type="text" name="fourthName" value={formData.fourthName} onChange={handleInputChange} className="w-full px-4 py-3 border border-slate-300 rounded-lg" />
                     </div>
-
-                    <div className="space-y-2">
-                        <label className="block text-sm font-medium text-slate-700">Nationality <span className="text-red-500">*</span></label>
+                     <div className="space-y-2">
+                        <label className="block text-sm font-medium text-slate-700">Nationality</label>
                         <select name="nationality" value={formData.nationality} onChange={handleInputChange} className="w-full px-4 py-3 border border-slate-300 rounded-lg">
                             <option value="">Select</option>
                             <option value="Omani">Omani</option>
                             <option value="Other">Other</option>
                         </select>
                     </div>
-
                     <div className="space-y-2 md:col-span-2">
-                        <label className="block text-sm font-medium text-slate-700">Gender <span className="text-red-500">*</span></label>
+                        <label className="block text-sm font-medium text-slate-700">Gender</label>
                         <div className="flex gap-4 mt-2">
                             <label className="flex items-center space-x-2">
                                 <input type="radio" name="gender" value="Male" checked={formData.gender === 'Male'} onChange={handleInputChange} />
@@ -202,11 +191,10 @@ const HEVNotification: React.FC = () => {
                             </label>
                         </div>
                     </div>
-
-                    <div className="space-y-2">
-                        <label className="block text-sm font-medium text-slate-700">Age Term & Value <span className="text-red-500">*</span></label>
+                     <div className="space-y-2">
+                        <label className="block text-sm font-medium text-slate-700">Age</label>
                         <div className="flex gap-2">
-                            <select name="term" value={formData.term} onChange={handleInputChange} className="w-1/3 px-2 py-3 border border-slate-300 rounded-lg">
+                             <select name="term" value={formData.term} onChange={handleInputChange} className="w-1/3 px-2 py-3 border border-slate-300 rounded-lg">
                                 <option value="Years">Years</option>
                                 <option value="Months">Months</option>
                                 <option value="Days">Days</option>
@@ -225,7 +213,6 @@ const HEVNotification: React.FC = () => {
                 <h2 className="text-2xl font-bold text-slate-900 mb-2">Clinical Details</h2>
                 <p className="text-slate-600">Select "Yes" or "No" for each symptom and specify duration.</p>
             </div>
-
             <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
                 <div className="bg-slate-50 px-6 py-4 border-b border-slate-200 grid grid-cols-12 gap-4">
                     <div className="col-span-4 font-semibold">Symptoms</div>
@@ -238,31 +225,16 @@ const HEVNotification: React.FC = () => {
                             <div className="col-span-4 font-medium">{symptom.name}</div>
                             <div className="col-span-4 flex justify-center space-x-4">
                                 <label className="flex items-center space-x-1">
-                                    <input type="radio"
-                                        name={`symptom-${index}`}
-                                        checked={symptom.value === 'Yes'}
-                                        onChange={() => handleSymptomChange(index, 'value', 'Yes')}
-                                    />
+                                    <input type="radio" name={`symptom-${index}`} checked={symptom.value === 'Yes'} onChange={() => handleSymptomChange(index, 'value', 'Yes')} />
                                     <span>Yes</span>
                                 </label>
                                 <label className="flex items-center space-x-1">
-                                    <input type="radio"
-                                        name={`symptom-${index}`}
-                                        checked={symptom.value === 'No'}
-                                        onChange={() => handleSymptomChange(index, 'value', 'No')}
-                                    />
+                                    <input type="radio" name={`symptom-${index}`} checked={symptom.value === 'No'} onChange={() => handleSymptomChange(index, 'value', 'No')} />
                                     <span>No</span>
                                 </label>
                             </div>
                             <div className="col-span-4">
-                                <input
-                                    type="text"
-                                    placeholder="Duration"
-                                    value={symptom.duration}
-                                    onChange={(e) => handleSymptomChange(index, 'duration', e.target.value)}
-                                    disabled={symptom.value !== 'Yes'}
-                                    className="w-full px-3 py-2 border border-slate-300 rounded-lg disabled:bg-slate-100 disabled:text-slate-400"
-                                />
+                                <input type="text" placeholder="Duration" value={symptom.duration} onChange={(e) => handleSymptomChange(index, 'duration', e.target.value)} disabled={symptom.value !== 'Yes'} className="w-full px-3 py-2 border border-slate-300 rounded-lg disabled:bg-slate-100 placeholder:text-slate-300" />
                             </div>
                         </div>
                     ))}
@@ -277,35 +249,33 @@ const HEVNotification: React.FC = () => {
                 <h2 className="text-2xl font-bold text-slate-900 mb-2">Lab Investigation</h2>
                 <p className="text-yellow-600">HEV Testing</p>
             </div>
-
             <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-4">
                     <h5 className="font-semibold text-lg border-b pb-2">HEV IgM</h5>
                     <div className="flex gap-4">
                         <label className="flex items-center space-x-2">
-                            <input type="radio" name="hevIgM" value="Positive" checked={formData.hevIgM === 'Positive'} onChange={handleInputChange} />
+                             <input type="radio" name="hevIgM" value="Positive" checked={formData.hevIgM === 'Positive'} onChange={handleInputChange} />
                             <span>Positive</span>
                         </label>
                         <label className="flex items-center space-x-2">
-                            <input type="radio" name="hevIgM" value="Negative" checked={formData.hevIgM === 'Negative'} onChange={handleInputChange} />
+                             <input type="radio" name="hevIgM" value="Negative" checked={formData.hevIgM === 'Negative'} onChange={handleInputChange} />
                             <span>Negative</span>
                         </label>
                     </div>
                 </div>
-
                 <div className="space-y-4">
                     <h5 className="font-semibold text-lg border-b pb-2">HEV RNA PCR</h5>
                     <div className="flex gap-4 items-center">
                         <label className="flex items-center space-x-2">
-                            <input type="radio" name="hevPcr" value="Positive" checked={formData.hevPcr === 'Positive'} onChange={handleInputChange} />
+                             <input type="radio" name="hevPcr" value="Positive" checked={formData.hevPcr === 'Positive'} onChange={handleInputChange} />
                             <span>Positive</span>
                         </label>
                         <label className="flex items-center space-x-2">
-                            <input type="radio" name="hevPcr" value="Negative" checked={formData.hevPcr === 'Negative'} onChange={handleInputChange} />
+                             <input type="radio" name="hevPcr" value="Negative" checked={formData.hevPcr === 'Negative'} onChange={handleInputChange} />
                             <span>Negative</span>
                         </label>
                     </div>
-                    {formData.hevPcr === 'Positive' && (
+                     {formData.hevPcr === 'Positive' && (
                         <div className="mt-2">
                             <input type="text" name="hevPcrValue" placeholder="PCR Value" value={formData.hevPcrValue} onChange={handleInputChange} className="w-full px-3 py-2 border border-slate-300 rounded-lg" />
                         </div>
@@ -315,7 +285,7 @@ const HEVNotification: React.FC = () => {
         </div>
     );
 
-    const renderOutcome = () => (
+     const renderOutcome = () => (
         <div className="space-y-8">
             <div className="text-center mb-8">
                 <h2 className="text-2xl font-bold text-slate-900 mb-2">Classification & Outcome</h2>
@@ -323,36 +293,20 @@ const HEVNotification: React.FC = () => {
             </div>
 
             <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6 space-y-6">
-                {/* Liver Function Tests Section */}
                 <div>
                     <h5 className="font-semibold text-lg text-slate-800 mb-4 border-b pb-2">Liver Function Tests</h5>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-2">
                             <label className="block text-sm font-medium text-slate-700">ALT (U/L)</label>
                             <div className="relative">
-                                <input
-                                    type="text"
-                                    name="alt"
-                                    value={formData.alt}
-                                    onChange={handleInputChange}
-                                    className="w-full px-4 py-3 border border-slate-300 rounded-lg pr-12"
-                                    placeholder="Enter value"
-                                />
+                                <input type="text" name="alt" value={formData.alt} onChange={handleInputChange} className="w-full px-4 py-3 border border-slate-300 rounded-lg pr-12" placeholder="Enter value" />
                                 <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm">U/L</span>
                             </div>
                         </div>
-
                         <div className="space-y-2">
                             <label className="block text-sm font-medium text-slate-700">AST (U/L)</label>
                             <div className="relative">
-                                <input
-                                    type="text"
-                                    name="ast"
-                                    value={formData.ast}
-                                    onChange={handleInputChange}
-                                    className="w-full px-4 py-3 border border-slate-300 rounded-lg pr-12"
-                                    placeholder="Enter value"
-                                />
+                                <input type="text" name="ast" value={formData.ast} onChange={handleInputChange} className="w-full px-4 py-3 border border-slate-300 rounded-lg pr-12" placeholder="Enter value" />
                                 <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm">U/L</span>
                             </div>
                         </div>
@@ -388,9 +342,9 @@ const HEVNotification: React.FC = () => {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100">
-            <div className="bg-white/80 backdrop-blur-xl shadow-sm border-b border-slate-200/60 px-6 py-4">
+             <div className="bg-white/80 backdrop-blur-xl shadow-sm border-b border-slate-200/60 px-6 py-4">
                 <div className="flex items-center space-x-4">
-                    <button onClick={() => window.history.back()} className="p-2 hover:bg-slate-100 rounded-lg">
+                    <button onClick={() => navigate('/hev-notification')} className="p-2 hover:bg-slate-100 rounded-lg">
                         <ArrowLeft className="h-6 w-6 text-slate-600" />
                     </button>
                     <h1 className="text-2xl font-bold text-slate-800">HEV Notification Entry</h1>
@@ -398,33 +352,26 @@ const HEVNotification: React.FC = () => {
             </div>
 
             <div className="p-6">
+                 {/* Progress Steps */}
                 <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-lg border border-slate-200/60 p-6 mb-8">
                     <div className="flex items-center justify-between mb-4">
                         <h2 className="font-semibold">Step {currentStep + 1} of {steps.length}</h2>
                     </div>
-
-                    <div className="flex items-center space-x-2 mb-6">
+                     <div className="flex items-center space-x-2 mb-6 overflow-x-auto pb-4">
                         {steps.map((step, index) => {
                             const Icon = step.icon;
                             const isActive = index === currentStep;
                             const isCompleted = index < currentStep;
-
                             return (
                                 <React.Fragment key={step.id}>
                                     <div
                                         onClick={() => setCurrentStep(index)}
-                                        className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 cursor-pointer ${isActive
-                                            ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/25'
-                                            : isCompleted
-                                                ? 'bg-green-100 text-green-700 hover:bg-green-200'
-                                                : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                                            }`}>
+                                        className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 cursor-pointer whitespace-nowrap ${isActive ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/25' : isCompleted ? 'bg-green-100 text-green-700 hover:bg-green-200' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+                                    >
                                         <Icon className="h-5 w-5" />
                                         <span className="font-medium text-sm hidden sm:block">{step.title}</span>
                                     </div>
-                                    {index < steps.length - 1 && (
-                                        <ChevronRight className="h-4 w-4 text-slate-400" />
-                                    )}
+                                    {index < steps.length - 1 && <ChevronRight className="h-4 w-4 text-slate-400" />}
                                 </React.Fragment>
                             );
                         })}
@@ -433,30 +380,17 @@ const HEVNotification: React.FC = () => {
 
                 <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-lg border border-slate-200/60 p-8">
                     {renderCurrentStep()}
-
                     <div className="flex justify-between pt-8 border-t border-slate-200 mt-8">
-                        <button
-                            onClick={handlePrevious}
-                            disabled={currentStep === 0}
-                            className="flex items-center space-x-2 px-6 py-3 border border-slate-300 rounded-lg hover:bg-slate-50 disabled:opacity-50"
-                        >
+                        <button onClick={handlePrevious} disabled={currentStep === 0} className="flex items-center space-x-2 px-6 py-3 border border-slate-300 rounded-lg hover:bg-slate-50 disabled:opacity-50">
                             <ChevronLeft className="h-4 w-4" />
                             <span>Previous</span>
                         </button>
-
                         {currentStep === steps.length - 1 ? (
-                            <button
-                                onClick={handleSubmit}
-                                disabled={loading}
-                                className="flex items-center space-x-2 px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 disabled:opacity-50"
-                            >
+                            <button onClick={handleSubmit} disabled={loading} className="flex items-center space-x-2 px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 disabled:opacity-50">
                                 {loading ? <span>Saving...</span> : <> <Save className="h-4 w-4" /> <span>Save</span> </>}
                             </button>
                         ) : (
-                            <button
-                                onClick={handleNext}
-                                className="flex items-center space-x-2 px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-                            >
+                            <button onClick={handleNext} className="flex items-center space-x-2 px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
                                 <span>Next</span>
                                 <ChevronRight className="h-4 w-4" />
                             </button>
@@ -468,4 +402,4 @@ const HEVNotification: React.FC = () => {
     );
 };
 
-export default HEVNotification;
+export default HEVEntry;

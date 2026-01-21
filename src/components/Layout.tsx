@@ -509,7 +509,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <FloatingParticles />
 
         {/* Enhanced Sidebar Header */}
-        <div className="flex items-center justify-between h-20 px-4 bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 relative overflow-hidden">
+        <div className="flex items-center justify-between h-16 px-4 bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700 relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-indigo-700/20" />
           <div className="relative flex items-center space-x-3 overflow-hidden">
             <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center backdrop-blur-sm">

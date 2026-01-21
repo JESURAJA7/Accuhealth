@@ -284,7 +284,7 @@ const NotificationEntry: React.FC = () => {
         return;
       }
 
-      const response = await fetch(`${API_BASE_URL}/api/notifications`, {
+      const response = await fetch(`${API_BASE_URL}/notifications`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -330,7 +330,7 @@ const NotificationEntry: React.FC = () => {
         formData.append('attachments', file);
       });
 
-      const response = await fetch(`${API_BASE_URL}/api/notifications/${notificationId}/attachments`, {
+      const response = await fetch(`${API_BASE_URL}/notifications/${notificationId}/attachments`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`

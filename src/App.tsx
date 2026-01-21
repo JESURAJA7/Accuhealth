@@ -24,7 +24,8 @@ import ARIListing from './pages/ARI/ARIListing';
 import ARINotification from './pages/ARI/ARINotification';
 import PolioCaseListing from './pages/Polio/PolioCaseListing';
 import PolioInvestigation from './pages/Polio/PolioInvestigation';
-import HEVNotification from './pages/HEV/HEVNotification';
+import HEVEntry from './pages/HEV/HEVEntry';
+import HEVListing from './pages/HEV/HEVListing';
 import HepatitisNotification from './pages/HEV/HepatitisNotification';
 import HemorrhagicNotification from './pages/Hemorrhagic ds/HemorrhagicNotification';
 import NewEntry from './pages/Hemorrhagic ds/NewEntry';
@@ -286,7 +287,17 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Layout>
-                    <HEVNotification />
+                    <HEVListing />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/hev-notification/entry"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <HEVEntry />
                   </Layout>
                 </ProtectedRoute>
               }

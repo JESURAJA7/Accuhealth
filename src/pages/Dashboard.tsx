@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
-import { TrendingUp, TrendingDown, Users, MapPin, Activity, AlertTriangle, CheckCircle, Clock } from 'lucide-react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { TrendingUp, TrendingDown, MapPin, Activity, AlertTriangle, CheckCircle, Clock } from 'lucide-react';
 
 import { API_BASE_URL } from '../config';
 const API_URL = API_BASE_URL;
@@ -18,12 +18,6 @@ interface CaseData {
   cases: number;
 }
 
-interface TrendData {
-  date: string;
-  cases: number;
-  recovered: number;
-}
-
 const Dashboard: React.FC = () => {
   const [stats, setStats] = useState<DashboardStats>({
     totalNotifications: 0,
@@ -33,7 +27,6 @@ const Dashboard: React.FC = () => {
   });
   const [casesByGovernorate, setCasesByGovernorate] = useState<CaseData[]>([]);
   const [topRegions, setTopRegions] = useState<CaseData[]>([]);
-  const [trendData, setTrendData] = useState<TrendData[]>([]);
 
   useEffect(() => {
     fetchDashboardData();
@@ -61,16 +54,6 @@ const Dashboard: React.FC = () => {
       setStats(statsData);
       setCasesByGovernorate(casesData);
       setTopRegions(regionsData.slice(0, 5));
-
-      // Mock trend data
-      setTrendData([
-        { date: 'Jan', cases: 120, recovered: 100 },
-        { date: 'Feb', cases: 150, recovered: 130 },
-        { date: 'Mar', cases: 180, recovered: 160 },
-        { date: 'Apr', cases: 140, recovered: 120 },
-        { date: 'May', cases: 200, recovered: 180 },
-        { date: 'Jun', cases: 170, recovered: 150 },
-      ]);
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
     }
@@ -119,11 +102,7 @@ const Dashboard: React.FC = () => {
     }
   ];
 
-  const pieData = [
-    { name: 'Confirmed', value: stats.confirmedCases, color: '#10b981' },
-    { name: 'Suspected', value: stats.suspectedCases, color: '#f59e0b' },
-    { name: 'Recovered', value: 6800, color: '#3b82f6' },
-  ];
+
 
   return (
     <div className="space-y-4">
@@ -142,7 +121,7 @@ const Dashboard: React.FC = () => {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
         {statCards.map((card, index) => {
           const Icon = card.icon;
           const TrendIcon = card.trend === 'up' ? TrendingUp : TrendingDown;
@@ -171,49 +150,55 @@ const Dashboard: React.FC = () => {
       </div>
 
       {/* Charts Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 space-x-8 ">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Cases by Governorate Chart */}
-        <div className="card p-2 w-[450px] h-[300px]">
-          <div className="flex items-center justify-between mb-4">
+        <div className="card p-4 lg:col-span-2 shadow-sm border border-slate-100 h-[400px]">
+          <div className="flex items-center justify-between mb-6">
             <div>
               <h3 className="text-lg font-bold text-slate-900">Cases by Governorate</h3>
-              <p className="text-xs text-slate-600 mt-0.5">Distribution across regions</p>
+              <p className="text-xs text-slate-600 mt-1">Distribution across regions</p>
             </div>
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 bg-slate-50 px-2 py-1 rounded-lg">
               <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-              <span className="text-xs text-slate-600">Active Cases</span>
+              <span className="text-xs font-medium text-slate-600">Active Cases</span>
             </div>
           </div>
-          <div className="h-56">
+          <div className="h-[300px] w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={casesByGovernorate} margin={{ top: 10, right: 20, left: 10, bottom: 40 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+              <BarChart data={casesByGovernorate} margin={{ top: 10, right: 30, left: 0, bottom: 20 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
                 <XAxis
                   dataKey="name"
-                  tick={{ fontSize: 10, fill: '#64748b' }}
-                  angle={-45}
-                  textAnchor="end"
-                  height={60}
+                  tick={{ fontSize: 11, fill: '#64748b' }}
+                  axisLine={false}
+                  tickLine={false}
+                  dy={10}
                 />
-                <YAxis tick={{ fontSize: 10, fill: '#64748b' }} />
+                <YAxis 
+                  tick={{ fontSize: 11, fill: '#64748b' }} 
+                  axisLine={false}
+                  tickLine={false}
+                />
                 <Tooltip
+                  cursor={{ fill: '#f8fafc' }}
                   contentStyle={{
                     backgroundColor: 'white',
-                    border: '1px solid #e2e8f0',
+                    border: 'none',
                     borderRadius: '8px',
-                    boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
-                    fontSize: '12px'
+                    boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -1px rgb(0 0 0 / 0.06)',
+                    padding: '8px 12px'
                   }}
                 />
                 <Bar
                   dataKey="cases"
                   fill="url(#blueGradient)"
-                  radius={[2, 2, 0, 0]}
+                  radius={[4, 4, 0, 0]}
+                  maxBarSize={50}
                 />
                 <defs>
                   <linearGradient id="blueGradient" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%" stopColor="#3b82f6" />
-                    <stop offset="100%" stopColor="#1d4ed8" />
+                    <stop offset="100%" stopColor="#2563eb" />
                   </linearGradient>
                 </defs>
               </BarChart>
@@ -222,32 +207,33 @@ const Dashboard: React.FC = () => {
         </div>
 
         {/* Top Affected Regions */}
-        <div className="card p-4 space-y-4 ">
-          <div className="flex items-center justify-between mb-4">
+        <div className="card p-4 shadow-sm border border-slate-100 h-[400px] flex flex-col">
+          <div className="flex items-center justify-between mb-6">
             <div>
               <h3 className="text-lg font-bold text-slate-900">Top Affected Regions</h3>
-              <p className="text-xs text-slate-600 mt-0.5">Highest case counts</p>
+              <p className="text-xs text-slate-600 mt-1">Highest case counts</p>
             </div>
-            <button className="text-blue-600 hover:text-blue-800 text-xs font-medium hover:bg-blue-50 px-2 py-1 rounded-md transition-colors">
+            <button className="text-blue-600 hover:text-blue-700 text-xs font-medium hover:bg-blue-50 px-2.5 py-1.5 rounded-lg transition-colors">
               View All
             </button>
           </div>
-          <div className="space-y-2">
+          <div className="space-y-3 overflow-y-auto flex-1 pr-2 custom-scrollbar">
             {topRegions.map((region, index) => (
-              <div key={index} className="flex items-center justify-between p-2 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors">
-                <div className="flex items-center space-x-2">
-                  <div className={`w-6 h-6 rounded-md flex items-center justify-center text-white font-bold text-xs ${index === 0 ? 'bg-gradient-to-r from-yellow-400 to-yellow-500' :
-                      index === 1 ? 'bg-gradient-to-r from-gray-400 to-gray-500' :
-                        index === 2 ? 'bg-gradient-to-r from-orange-400 to-orange-500' :
-                          'bg-gradient-to-r from-blue-400 to-blue-500'
+              <div key={index} className="flex items-center justify-between p-3 bg-slate-50 rounded-xl hover:bg-slate-100 transition-all duration-200 group">
+                <div className="flex items-center space-x-3">
+                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold text-xs shadow-sm group-hover:scale-110 transition-transform ${
+                      index === 0 ? 'bg-gradient-to-br from-yellow-400 to-yellow-600' :
+                      index === 1 ? 'bg-gradient-to-br from-slate-400 to-slate-600' :
+                      index === 2 ? 'bg-gradient-to-br from-orange-400 to-orange-600' :
+                      'bg-gradient-to-br from-blue-400 to-blue-600'
                     }`}>
                     {index + 1}
                   </div>
-                  <span className="font-medium text-slate-900 text-sm">{region.name}</span>
+                  <span className="font-medium text-slate-700 text-sm group-hover:text-slate-900">{region.name}</span>
                 </div>
                 <div className="text-right">
-                  <div className="font-bold text-slate-900 text-sm">{region.cases}</div>
-                  <div className="text-xs text-slate-500">cases</div>
+                  <div className="font-bold text-slate-900 text-sm">{region.cases.toLocaleString()}</div>
+                  <div className="text-[10px] font-medium text-slate-400 uppercase tracking-wide">cases</div>
                 </div>
               </div>
             ))}

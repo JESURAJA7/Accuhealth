@@ -191,7 +191,7 @@ const TBNotification: React.FC = () => {
         return;
       }
 
-      const response = await fetch(`${API_BASE_URL}/api/tb`, {
+      const response = await fetch(`${API_BASE_URL}/tb`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
