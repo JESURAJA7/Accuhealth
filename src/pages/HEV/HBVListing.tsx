@@ -1,56 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Search, FileText, ArrowLeft, Loader2, Eye, Edit, Trash2 } from 'lucide-react';
+import { Plus, Search, FileText, ArrowLeft, Loader2 } from 'lucide-react';
 import { API_BASE_URL } from '../../config';
-import HepatitisPDFGenerator from '../../components/DownloadPDF/HepatitisPDFGenerator';
 
-interface HEVRecord {
-    _id: string; // Mongoose ID
-    id?: number; 
+interface HBVRecord {
+    id: number;
     patientId: string;
     firstName: string;
     secondName: string;
     civilId: string;
-    reportingDate: string; // ISO string from DB
+    reportingDate: string;
     outcome: string;
-    finalOutcome: string;
 }
 
-const HEVListing: React.FC = () => {
-    // ...
+const HBVListing: React.FC = () => {
     const navigate = useNavigate();
-    const [records, setRecords] = useState<HEVRecord[]>([]);
+    const [records, setRecords] = useState<HBVRecord[]>([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
-    // ... stats logic? HEVListing in Step 631 didn't show stats state in displayed lines 1-200 except in code?
-    // Wait, Step 631 lines 1-200. I didn't see stats state.
-    // Line 23: const [search, setSearch] = useState('');
-    // Line 24: useEffect...
-    // The stats state is MISSING or I missed it.
-    // Ah, lines 17-66.
-    // records.map uses `record.firstName` etc.
-    // I should check if HEVListing had stats. The viewer shows lines 1-200.
-    // It seems HEVListing does NOT have stats logic in the state definition (lines 18-23).
-    // BUT the JSX lines 108-153 DOES render stats!
-    // `<p className="text-3xl font-bold text-slate-900 mt-1">{stats.total}</p>`
-    // This implies `stats` exists.
-    // Code in Step 631:
-    // 18: const HEVListing: React.FC = () => {
-    // 19:     const navigate = useNavigate();
-    // 20:     const [records, setRecords] = useState<HEVRecord[]>([]);
-    // 21:     const [loading, setLoading] = useState(true);
-    // 22:     const [search, setSearch] = useState('');
-    // 23:
-    // 24:     useEffect(() => {
-    //
-    // Where is `stats`?
-    // Maybe it's defined after?
-    // It's not in lines 1-38.
-    // This means `HEVListing.tsx` might be broken or I missed it?
-    // Wait, I am replacing the whole file content implicitly if I effectively replace imports + logic + return.
-    // I should add `stats` logic if it was missing or if I am overwriting it.
-    // I'll add the stats logic to be safe, matching the UI expectation.
-
     const [stats, setStats] = useState({
         total: 0,
         saved: 0,
@@ -62,7 +29,7 @@ const HEVListing: React.FC = () => {
         const initAndFetch = async () => {
             const token = localStorage.getItem('token');
             try {
-                await fetch(`${API_BASE_URL}/hev-notifications/init-table`, {
+                await fetch(`${API_BASE_URL}/hbv-notifications/init-table`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
             } catch (e) {
@@ -78,8 +45,8 @@ const HEVListing: React.FC = () => {
         try {
             const token = localStorage.getItem('token');
             const url = searchTerm
-                ? `${API_BASE_URL}/hev-notifications?search=${encodeURIComponent(searchTerm)}`
-                : `${API_BASE_URL}/hev-notifications`;
+                ? `${API_BASE_URL}/hbv-notifications?search=${encodeURIComponent(searchTerm)}`
+                : `${API_BASE_URL}/hbv-notifications`;
 
             const response = await fetch(url, {
                 headers: {
@@ -93,19 +60,17 @@ const HEVListing: React.FC = () => {
                 const notifications = data.notifications || [];
                 setRecords(notifications);
                 
-                // HEV uses camelCase and potentially different outcome values? 
-                // Assuming standard Outcome values.
                 setStats({
                     total: notifications.length,
-                    saved: notifications.filter((n: HEVRecord) => n.outcome === 'Recovered').length,
-                    rejected: notifications.filter((n: HEVRecord) => n.outcome === 'Died').length,
+                    saved: notifications.filter((n: HBVRecord) => n.outcome === 'Recovered').length,
+                    rejected: notifications.filter((n: HBVRecord) => n.outcome === 'Died').length,
                     institutes: new Set(notifications.map((n: any) => n.institution)).size
                 });
             } else {
                 console.error('Failed to fetch records');
             }
         } catch (error) {
-            console.error('Error fetching HEV records:', error);
+            console.error('Error fetching HBV records:', error);
         } finally {
             setLoading(false);
         }
@@ -116,58 +81,30 @@ const HEVListing: React.FC = () => {
         fetchRecords(search);
     };
 
-    const handleDelete = async (id: string | number) => {
-        if (!window.confirm('Are you sure you want to delete this notification?')) return;
-        
-        try {
-            const token = localStorage.getItem('token');
-            const response = await fetch(`${API_BASE_URL}/hev-notifications/${id}`, {
-                method: 'DELETE',
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-
-            if (response.ok) {
-                setRecords(records.filter(r => (r._id !== id && r.id !== id)));
-                fetchRecords(search);
-            } else {
-                alert('Failed to delete notification');
-            }
-        } catch (error) {
-            console.error('Error deleting record:', error);
-            alert('Error deleting record');
-        }
-    };
-
     return (
         <div className="min-h-screen bg-slate-50/50 p-8">
             <div className="max-w-7xl mx-auto space-y-6">
-                
-                {/* Header */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
                     <div className="space-y-1">
                         <div className="flex items-center gap-2 text-slate-500 text-sm font-medium">
                             <ArrowLeft className="w-4 h-4 cursor-pointer hover:text-slate-800" onClick={() => navigate('/dashboard')} />
                             <span>Notifications</span>
                         </div>
-                        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">HEV Reports</h1>
-                        <p className="text-slate-500">Manage and track Hepatitis E Virus notifications</p>
+                        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">HBV Notifications</h1>
+                        <p className="text-slate-500">Manage and track Hepatitis B Virus notifications</p>
                     </div>
-
                     <div className="flex gap-3">
                          <button 
-                            onClick={() => navigate('/hev-notification-form')}
+                            onClick={() => navigate('/hbv-notification')}
                             className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl transition-all shadow-sm shadow-blue-200 hover:shadow-blue-300 active:scale-95"
                         >
                             <Plus className="w-4 h-4" />
-                            <span>Add Notification</span>
+                            <span>New</span>
                         </button>
                     </div>
                 </div>
 
-                {/* Stats Cards - Simplified for HEV */}
-                {/* Wait, the stats cards were using `stats.total` etc. I should include them. */}
+                {/* Stats Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
                         <div className="flex items-center justify-between">
@@ -180,8 +117,7 @@ const HEVListing: React.FC = () => {
                             </div>
                         </div>
                     </div>
-                    {/* ... other stats ... */}
-                     <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                    <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
                         <div className="flex items-center justify-between">
                             <div>
                                 <p className="text-sm text-slate-500 font-medium">Saved</p>
@@ -216,7 +152,7 @@ const HEVListing: React.FC = () => {
                     </div>
                 </div>
 
-                {/* Filters & Search - Simplified for HEV */}
+                {/* Search */}
                 <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
                     <form onSubmit={handleSearch} className="flex gap-4">
                         <div className="relative flex-1 max-w-md">
@@ -245,7 +181,7 @@ const HEVListing: React.FC = () => {
                                     <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">IDs</th>
                                     <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Reporting Date</th>
                                     <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</th>
-                                    <th className="px-6 py-4 text-center text-xs font-semibold text-slate-500 uppercase tracking-wider">Actions</th>
+                                    <th className="px-6 py-4 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-100">
@@ -261,12 +197,12 @@ const HEVListing: React.FC = () => {
                                 ) : records.length === 0 ? (
                                     <tr>
                                         <td colSpan={5} className="py-12 text-center text-slate-500">
-                                            No HEV notifications found
+                                            No HBV notifications found
                                         </td>
                                     </tr>
                                 ) : (
                                     records.map((record) => (
-                                        <tr key={record._id || record.id} className="hover:bg-slate-50/50 transition-colors">
+                                        <tr key={record.id} className="hover:bg-slate-50/50 transition-colors">
                                             <td className="px-6 py-4">
                                                 <div className="flex items-center gap-3">
                                                     <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-xs">
@@ -300,29 +236,9 @@ const HEVListing: React.FC = () => {
                                                 </span>
                                             </td>
                                             <td className="px-6 py-4 text-right">
-                                                <div className="flex items-center justify-center gap-2">
-                                                    <button 
-                                                        className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
-                                                        title="View Details"
-                                                    >
-                                                        <Eye className="h-4 w-4" />
-                                                    </button>
-                                                    <button 
-                                                        onClick={() => navigate('/hev-notification-form')} 
-                                                        className="p-2 text-slate-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-all"
-                                                        title="Edit"
-                                                    >
-                                                        <Edit className="h-4 w-4" />
-                                                    </button>
-                                                    <button 
-                                                        onClick={() => handleDelete(record.id || record._id)}
-                                                        className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
-                                                        title="Delete"
-                                                    >
-                                                        <Trash2 className="h-4 w-4" />
-                                                    </button>
-                                                    <HepatitisPDFGenerator data={record as any} type="HEV" />
-                                                </div>
+                                                <button className="text-blue-600 hover:text-blue-800 font-medium text-sm">
+                                                    View
+                                                </button>
                                             </td>
                                         </tr>
                                     ))
@@ -336,4 +252,4 @@ const HEVListing: React.FC = () => {
     );
 };
 
-export default HEVListing;
+export default HBVListing;

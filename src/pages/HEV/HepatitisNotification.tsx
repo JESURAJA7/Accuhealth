@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
+import toast from 'react-hot-toast';
+import { nationalities } from '../../constants/nationalities';
+
+
 import { ArrowLeft, Activity, TestTube, ChevronRight, ChevronLeft, Save, User, FileText } from 'lucide-react';
 import type { HEVNotificationFormData } from '../../types/index';
+import { API_BASE_URL } from '../../config';
 
 const HepatitisNotification: React.FC<{ type: 'HAV' | 'HBV' | 'HCV' | 'HEV' }> = ({ type }) => {
     const [currentStep, setCurrentStep] = useState(0);
@@ -50,7 +55,10 @@ const HepatitisNotification: React.FC<{ type: 'HAV' | 'HBV' | 'HCV' | 'HEV' }> =
         alt: '',
         ast: '',
         outcome: '',
-        remarks: ''
+        remarks: '',
+        onsetOfSymptomsDate: '',
+        isPregnant: '',
+        pregnancyDuration: ''
     });
 
     const steps = [
@@ -109,13 +117,61 @@ const HepatitisNotification: React.FC<{ type: 'HAV' | 'HBV' | 'HCV' | 'HEV' }> =
     const handleSubmit = async () => {
         setLoading(true);
         try {
-            // Placeholder for submission logic
-            console.log(`Submitting ${type} Data:`, formData);
-            alert(`${type} Notification saved (Simulation)`);
-            window.history.back();
+            const token = localStorage.getItem('token');
+            const apiEndpoint = type === 'HAV' ? 'hav-notifications' : 
+                               type === 'HBV' ? 'hbv-notifications' : 
+                               type === 'HCV' ? 'hcv-notifications' :
+                               'hev-notifications';
+            
+            // Sanitize payload: convert empty strings to null for date fields and others if needed
+            const sanitizedData = { ...formData };
+            const dateFields = ['reportingDate', 'onsetOfSymptomsDate', 'expiryDate', 'dob'];
+            dateFields.forEach(field => {
+                if (sanitizedData[field as keyof HEVNotificationFormData] === '') {
+                    (sanitizedData as any)[field] = null;
+                }
+            });
+            
+            const response = await fetch(`${API_BASE_URL}/${apiEndpoint}`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+
+                // Send dummy patientId to satisfy old backend validation (will be overwritten by new backend)
+                body: JSON.stringify({ 
+                    ...sanitizedData, 
+                    patientId: sanitizedData.patientId || 'PENDING' 
+                })
+            });
+
+            if (response.ok) {
+                toast.success(`${type} Notification saved successfully!`);
+                const listingRoute = type === 'HAV' ? '/hav-listing' : 
+                                    type === 'HBV' ? '/hbv-listing' : 
+                                    type === 'HCV' ? '/hcv-listing' :
+                                    '/hev-listing';
+                
+                setTimeout(() => {
+                    window.location.href = listingRoute;
+                }, 1500);
+            } else {
+                // Check if response is JSON before parsing
+                const contentType = response.headers.get('content-type');
+                if (contentType && contentType.includes('application/json')) {
+                    const errorData = await response.json();
+                    console.error('API Error:', errorData);
+                    toast.error(`Error: ${errorData.error || 'Unknown error'}`);
+                } else {
+                    const errorText = await response.text();
+                    console.error('API Error (non-JSON):', errorText);
+                    toast.error(`Error: ${response.status} ${response.statusText}`);
+                }
+            }
         } catch (error) {
             console.error('Error:', error);
-            alert('Error saving notification');
+            toast.error('Network error saving notification');
         } finally {
             setLoading(false);
         }
@@ -132,7 +188,7 @@ const HepatitisNotification: React.FC<{ type: 'HAV' | 'HBV' | 'HCV' | 'HEV' }> =
                 {/* Institution Info - Readonly/Pre-filled as in template */}
                 <div className="space-y-2">
                     <label className="block text-sm font-medium text-slate-700">State <span className="text-red-500">*</span></label>
-                    <input type="text" className="w-full px-4 py-3 border border-slate-300 rounded-lg bg-slate-50" readOnly value="NORTH ASH SHARQIYAH" />
+                    <input type="text" name="governorate" value={formData.governorate} onChange={handleInputChange} className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
                 </div>
                 <div className="space-y-2">
                     <label className="block text-sm font-medium text-slate-700">Sub-Locality (Optional)</label>
@@ -140,11 +196,15 @@ const HepatitisNotification: React.FC<{ type: 'HAV' | 'HBV' | 'HCV' | 'HEV' }> =
                 </div>
                 <div className="space-y-2">
                     <label className="block text-sm font-medium text-slate-700">Locality <span className="text-red-500">*</span></label>
-                    <input type="text" className="w-full px-4 py-3 border border-slate-300 rounded-lg bg-slate-50" readOnly value="Ibra" />
+                    <input type="text" name="wilayat" value={formData.wilayat} onChange={handleInputChange} className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
                 </div>
                 <div className="space-y-2">
                     <label className="block text-sm font-medium text-slate-700">Reporting Date <span className="text-red-500">*</span></label>
                     <input type="date" name="reportingDate" value={formData.reportingDate} onChange={handleInputChange} className="w-full px-4 py-3 border border-slate-300 rounded-lg" />
+                </div>
+                <div className="space-y-2">
+                    <label className="block text-sm font-medium text-slate-700">Onset of Symptoms Date</label>
+                    <input type="date" name="onsetOfSymptomsDate" value={formData.onsetOfSymptomsDate} onChange={handleInputChange} className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
                 </div>
             </div>
 
@@ -153,6 +213,16 @@ const HepatitisNotification: React.FC<{ type: 'HAV' | 'HBV' | 'HCV' | 'HEV' }> =
                     <h5 className="text-lg font-semibold text-slate-900">Patient Information</h5>
                 </div>
                 <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div className="space-y-2">
+                        <label className="block text-sm font-medium text-slate-700">Patient ID</label>
+                        <input 
+                            type="text" 
+                            value={`Auto-generated (${type}-XXX)`} 
+                            readOnly 
+                            disabled 
+                            className="w-full px-4 py-3 border border-slate-300 rounded-lg bg-slate-100 text-slate-500 cursor-not-allowed" 
+                        />
+                    </div>
                     <div className="space-y-2">
                         <label className="block text-sm font-medium text-slate-700">National ID <span className="text-red-500">*</span></label>
                         <input type="text" name="civilId" value={formData.civilId} onChange={handleInputChange} className="w-full px-4 py-3 border border-slate-300 rounded-lg" />
@@ -179,8 +249,11 @@ const HepatitisNotification: React.FC<{ type: 'HAV' | 'HBV' | 'HCV' | 'HEV' }> =
                         <label className="block text-sm font-medium text-slate-700">Nationality <span className="text-red-500">*</span></label>
                         <select name="nationality" value={formData.nationality} onChange={handleInputChange} className="w-full px-4 py-3 border border-slate-300 rounded-lg">
                             <option value="">Select</option>
-                            <option value="Omani">Omani</option>
-                            <option value="Other">Other</option>
+                            {nationalities.map((nat) => (
+                                <option key={nat} value={nat}>
+                                    {nat}
+                                </option>
+                            ))}
                         </select>
                     </div>
 
@@ -197,6 +270,24 @@ const HepatitisNotification: React.FC<{ type: 'HAV' | 'HBV' | 'HCV' | 'HEV' }> =
                             </label>
                         </div>
                     </div>
+
+                    {formData.gender === 'Female' && (
+                        <div className="space-y-2">
+                            <label className="block text-sm font-medium text-slate-700">Pregnancy</label>
+                            <select name="isPregnant" value={formData.isPregnant} onChange={handleInputChange} className="w-full px-4 py-3 border border-slate-300 rounded-lg">
+                                <option value="">Select</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </div>
+                    )}
+
+                    {formData.gender === 'Female' && formData.isPregnant === 'Yes' && (
+                        <div className="space-y-2">
+                            <label className="block text-sm font-medium text-slate-700">How many days</label>
+                            <input type="text" name="pregnancyDuration" value={formData.pregnancyDuration} onChange={handleInputChange} className="w-full px-4 py-3 border border-slate-300 rounded-lg" placeholder="Duration e.g. 30 days" />
+                        </div>
+                    )}
 
                     <div className="space-y-2">
                         <label className="block text-sm font-medium text-slate-700">Age Term & Value <span className="text-red-500">*</span></label>

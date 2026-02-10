@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Calendar, User, FileText, Activity, TestTube, ChevronRight, ChevronLeft, Save, X } from 'lucide-react';
 import type { TBNotificationFormData } from '../../types/index';
 import FileUpload from '../../components/FileUpload/FileUpload';
@@ -177,6 +178,8 @@ const TBNotification: React.FC = () => {
   };
 
 
+  const navigate = useNavigate();
+
   const handleSubmit = async () => {
     if (!validateForm()) {
       return;
@@ -191,6 +194,8 @@ const TBNotification: React.FC = () => {
         return;
       }
 
+      console.log('Submitting TB Notification:', formData);
+
       const response = await fetch(`${API_BASE_URL}/tb`, {
         method: 'POST',
         headers: {
@@ -204,7 +209,7 @@ const TBNotification: React.FC = () => {
 
       if (response.ok) {
         alert(`TB Notification created successfully! ID: ${data.notificationId}`);
-        window.history.back();
+        navigate('/tb-notifications');
       } else {
         alert(`Error: ${data.error || 'Failed to create notification'}`);
         if (data.missingFields) {
@@ -231,51 +236,51 @@ const TBNotification: React.FC = () => {
           <label className="block text-sm font-medium text-slate-700">
             Governorate
           </label>
-          <div className="flex gap-2">
-            <input
-              type="text"
-              value="NORTH ASH SHARQIYAH"
-              readOnly
-              className="flex-1 px-4 py-3 border border-slate-300 rounded-lg bg-slate-50"
-            />
-            <button type="button" className="px-3 py-2 border border-slate-300 rounded-lg hover:bg-slate-100">
-              <X className="h-4 w-4" />
-            </button>
-          </div>
+          <select
+            name="governorate"
+            value={formData.governorate}
+            onChange={handleInputChange}
+            className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          >
+            <option value="">Select</option>
+            <option value="Muscat">Muscat</option>
+            <option value="Dhofar">Dhofar</option>
+            <option value="Al Dakhiliyah">Al Dakhiliyah</option>
+            <option value="Al Sharqiyah North">Al Sharqiyah North</option>
+            <option value="Al Sharqiyah South">Al Sharqiyah South</option>
+            <option value="Al Batinah North">Al Batinah North</option>
+            <option value="Al Batinah South">Al Batinah South</option>
+            <option value="Musandam">Musandam</option>
+            <option value="Al Dhahirah">Al Dhahirah</option>
+            <option value="Al Buraimi">Al Buraimi</option>
+            <option value="Al Wusta">Al Wusta</option>
+          </select>
         </div>
 
         <div className="space-y-2">
           <label className="block text-sm font-medium text-slate-700">
             Wilayat
           </label>
-          <div className="flex gap-2">
-            <input
-              type="text"
-              value="Ibra"
-              readOnly
-              className="flex-1 px-4 py-3 border border-slate-300 rounded-lg bg-slate-50"
-            />
-            <button type="button" className="px-3 py-2 border border-slate-300 rounded-lg hover:bg-slate-100">
-              <X className="h-4 w-4" />
-            </button>
-          </div>
+          <input
+            type="text"
+            name="wilayat"
+            value={formData.wilayat}
+            onChange={handleInputChange}
+            className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          />
         </div>
 
         <div className="space-y-2">
           <label className="block text-sm font-medium text-slate-700">
             Institution <span className="text-red-500">*</span>
           </label>
-          <div className="flex gap-2">
-            <input
-              type="text"
-              value="Ibra Hospital"
-              readOnly
-              className="flex-1 px-4 py-3 border border-slate-300 rounded-lg bg-slate-50"
-            />
-            <button type="button" className="px-3 py-2 border border-slate-300 rounded-lg hover:bg-slate-100">
-              <X className="h-4 w-4" />
-            </button>
-          </div>
+          <input
+            type="text"
+            name="institution"
+            value={formData.institution}
+            onChange={handleInputChange}
+            className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          />
         </div>
 
         <div className="space-y-2">

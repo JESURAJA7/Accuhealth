@@ -126,4 +126,8 @@ export interface HEVNotificationFormData {
   // Outcome
   outcome: string;
   remarks: string;
+  onsetOfSymptomsDate: string;
+  // New fields for pregnancy
+  isPregnant?: string; // 'Yes' or 'No'
+  pregnancyDuration?: string;
 }

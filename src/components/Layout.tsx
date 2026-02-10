@@ -273,14 +273,15 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           ]
         },
         {
-          name: 'HEV',
+          name: 'Viral Hepatitis',
           href: '/hev-notification',
           icon: FlaskConical,
           hasSubmenu: true,
           children: [
-            { name: 'HAV', href: '/hav-notification' },
-            { name: 'HBV', href: '/hbv-notification' },
-            { name: 'HCV', href: '/hcv-notification' },
+            { name: 'HAV', href: '/hav-listing' },
+            { name: 'HBV', href: '/hbv-listing' },
+            { name: 'HCV', href: '/hcv-listing' },
+            { name: 'HEV', href: '/hev-listing' },
           ]
         },
       ],

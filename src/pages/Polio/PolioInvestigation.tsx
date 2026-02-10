@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Search, Bell, User, FileText, Save } from 'lucide-react';
+import { API_BASE_URL } from '../../config';
 
 interface InvestigationFormData {
   // Location Information
@@ -108,9 +110,45 @@ const PolioInvestigation: React.FC = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
+    setLoading(true);
+
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert('Authentication required');
+        return;
+      }
+
+      console.log('Submitting Polio Investigation:', formData);
+
+      const response = await fetch(`${API_BASE_URL}/polio`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(formData)
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to submit investigation');
+      }
+
+      const data = await response.json();
+      alert('Polio Investigation submitted successfully!');
+      navigate('/polio-notifications');
+    } catch (error: any) {
+      console.error('Error submitting form:', error);
+      alert(`Error: ${error.message}`);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleClear = () => {

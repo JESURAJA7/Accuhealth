@@ -1,38 +1,21 @@
 import express from "express";
-import { HevNotification } from "../models/Hepatitis.js";
+import { HcvNotification } from "../models/Hepatitis.js";
 import { authenticateToken } from "../middleware/authMiddleware.js";
 import { Op } from "sequelize";
 
 const router = express.Router();
 
-// POST - Create new HEV notification
+// POST - Create new HCV notification
 router.post("/", authenticateToken, async (req, res) => {
   try {
     const formData = req.body;
 
     // Basic validation
-    if (!formData.reportingDate) {
+    if (!formData.patientId || !formData.reportingDate) {
       return res
         .status(400)
-        .json({ error: "Missing required field: reportingDate" });
+        .json({ error: "Missing required fields (patientId, reportingDate)" });
     }
-
-    // Auto-generate Patient ID
-    const lastNotification = await HevNotification.findOne({
-      order: [["createdAt", "DESC"]],
-    });
-    let newId = "HEV-001";
-
-    if (lastNotification && lastNotification.patientId) {
-      // Handle both HEV-001 and HEV001 formats
-      const match = lastNotification.patientId.match(/HEV-?(\d+)/i);
-      if (match) {
-        const number = parseInt(match[1]);
-        newId = `HEV-${String(number + 1).padStart(3, "0")}`;
-      }
-    }
-
-    formData.patientId = newId;
 
     formData.createdBy = req.user.userId;
 
@@ -46,21 +29,21 @@ router.post("/", authenticateToken, async (req, res) => {
     };
     formData.id = generateId();
 
-    const notification = await HevNotification.create(formData);
+    const notification = await HcvNotification.create(formData);
     res.status(201).json({
-      message: "HEV Notification created successfully",
+      message: "HCV Notification created successfully",
       id: notification.id,
     });
   } catch (error) {
-    console.error("Error creating HEV notification:", error);
+    console.error("Error creating HCV notification:", error);
     res.status(500).json({
-      error: "Failed to create HEV notification",
+      error: "Failed to create HCV notification",
       details: error.message,
     });
   }
 });
 
-// GET - Get all HEV notifications (with optional search)
+// GET - Get all HCV notifications (with optional search)
 router.get("/", authenticateToken, async (req, res) => {
   try {
     const { page = 1, limit = 35, search } = req.query;
@@ -75,7 +58,7 @@ router.get("/", authenticateToken, async (req, res) => {
     }
 
     const { count, rows: notifications } =
-      await HevNotification.findAndCountAll({
+      await HcvNotification.findAndCountAll({
         where,
         order: [["createdAt", "DESC"]],
         limit: parseInt(limit),
@@ -99,11 +82,11 @@ router.get("/", authenticateToken, async (req, res) => {
   }
 });
 
-// DELETE - Delete HEV notification
+// DELETE - Delete HCV notification
 router.delete("/:id", authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
-    const deleted = await HevNotification.destroy({ where: { id } });
+    const deleted = await HcvNotification.destroy({ where: { id } });
 
     if (!deleted) {
       return res.status(404).json({ error: "Notification not found" });
@@ -111,7 +94,7 @@ router.delete("/:id", authenticateToken, async (req, res) => {
 
     res.json({ message: "Notification deleted successfully" });
   } catch (error) {
-    console.error("Error deleting HEV notification:", error);
+    console.error("Error deleting HCV notification:", error);
     res
       .status(500)
       .json({ error: "Failed to delete notification", details: error.message });

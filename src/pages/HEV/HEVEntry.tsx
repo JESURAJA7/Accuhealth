@@ -125,7 +125,7 @@ const HEVEntry: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div className="space-y-2">
                     <label className="block text-sm font-medium text-slate-700">State <span className="text-red-500">*</span></label>
-                    <input type="text" className="w-full px-4 py-3 border border-slate-300 rounded-lg bg-slate-50" readOnly value={formData.governorate} />
+                    <input type="text" name="governorate" value={formData.governorate} onChange={handleInputChange} className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
                 </div>
                 <div className="space-y-2">
                     <label className="block text-sm font-medium text-slate-700">Sub-Locality</label>
@@ -133,7 +133,7 @@ const HEVEntry: React.FC = () => {
                 </div>
                 <div className="space-y-2">
                     <label className="block text-sm font-medium text-slate-700">Locality <span className="text-red-500">*</span></label>
-                    <input type="text" className="w-full px-4 py-3 border border-slate-300 rounded-lg bg-slate-50" readOnly value={formData.wilayat} />
+                    <input type="text" name="wilayat" value={formData.wilayat} onChange={handleInputChange} className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
                 </div>
                 <div className="space-y-2">
                     <label className="block text-sm font-medium text-slate-700">Reporting Date <span className="text-red-500">*</span></label>

@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Bell, User, FileText, Activity, ChevronRight, ChevronLeft, Save } from 'lucide-react';
+import { API_BASE_URL } from '../../config';
 
 interface ARINotificationFormData {
   // Notification Info
@@ -135,13 +137,39 @@ const ARINotification: React.FC = () => {
     }
   };
 
+  const navigate = useNavigate();
+
   const handleSubmit = async () => {
     setLoading(true);
     try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert('Authentication required');
+        return;
+      }
+
       console.log('Submitting ARI Notification:', formData);
+      
+      const response = await fetch(`${API_BASE_URL}/ari`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(formData)
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to submit notification');
+      }
+
+      const data = await response.json();
       alert('ARI Notification submitted successfully!');
-    } catch (error) {
+      navigate('/ari-notifications'); // Redirect to listing page (to be created/verified)
+    } catch (error: any) {
       console.error('Error submitting notification:', error);
+      alert(`Error: ${error.message}`);
     } finally {
       setLoading(false);
     }

@@ -1,11 +1,11 @@
 import express from "express";
-import FeverRash from "../models/FeverRash.js";
+import Hemorrhagic from "../models/Hemorrhagic.js";
 import { authenticateToken } from "../middleware/authMiddleware.js";
 import { Op } from "sequelize";
 
 const router = express.Router();
 
-// POST - Create new Fever & Rash notification
+// POST - Create new Hemorrhagic notification
 router.post("/", authenticateToken, async (req, res) => {
   try {
     const formData = req.body;
@@ -24,21 +24,21 @@ router.post("/", authenticateToken, async (req, res) => {
     };
     formData.id = generateId();
 
-    const notification = await FeverRash.create(formData);
+    const notification = await Hemorrhagic.create(formData);
     res.status(201).json({
-      message: "Fever & Rash Notification created successfully",
+      message: "Hemorrhagic Notification created successfully",
       id: notification.id,
       notificationId: notification.id,
     });
   } catch (error) {
-    console.error("Error creating Fever & Rash notification:", error);
+    console.error("Error creating Hemorrhagic notification:", error);
     res
       .status(500)
       .json({ error: "Failed to create notification", details: error.message });
   }
 });
 
-// GET - Get all Fever & Rash notifications
+// GET - Get all Hemorrhagic notifications
 router.get("/", authenticateToken, async (req, res) => {
   try {
     const { page = 1, limit = 35, search } = req.query;
@@ -52,7 +52,7 @@ router.get("/", authenticateToken, async (req, res) => {
       ];
     }
 
-    const { count, rows: notifications } = await FeverRash.findAndCountAll({
+    const { count, rows: notifications } = await Hemorrhagic.findAndCountAll({
       where,
       order: [["createdAt", "DESC"]],
       limit: parseInt(limit),
@@ -69,7 +69,7 @@ router.get("/", authenticateToken, async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Error fetching Fever & Rash notifications:", error);
+    console.error("Error fetching Hemorrhagic notifications:", error);
     res
       .status(500)
       .json({ error: "Failed to fetch notifications", details: error.message });

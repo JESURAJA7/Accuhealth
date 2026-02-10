@@ -1,17 +1,20 @@
 import express from "express";
-import FeverRash from "../models/FeverRash.js";
+import ARI from "../models/ARI.js";
 import { authenticateToken } from "../middleware/authMiddleware.js";
 import { Op } from "sequelize";
 
 const router = express.Router();
 
-// POST - Create new Fever & Rash notification
+// POST - Create new ARI notification
 router.post("/", authenticateToken, async (req, res) => {
   try {
     const formData = req.body;
 
+    // Basic validation
     if (!formData.patientId || !formData.institution) {
-      return res.status(400).json({ error: "Missing required fields" });
+      return res
+        .status(400)
+        .json({ error: "Missing required fields (patientId, institution)" });
     }
 
     // Generate string ID for primary key
@@ -24,21 +27,24 @@ router.post("/", authenticateToken, async (req, res) => {
     };
     formData.id = generateId();
 
-    const notification = await FeverRash.create(formData);
+    const notification = await ARI.create(formData);
     res.status(201).json({
-      message: "Fever & Rash Notification created successfully",
+      message: "ARI Notification created successfully",
       id: notification.id,
       notificationId: notification.id,
     });
   } catch (error) {
-    console.error("Error creating Fever & Rash notification:", error);
+    console.error("Error creating ARI notification:", error);
     res
       .status(500)
-      .json({ error: "Failed to create notification", details: error.message });
+      .json({
+        error: "Failed to create ARI notification",
+        details: error.message,
+      });
   }
 });
 
-// GET - Get all Fever & Rash notifications
+// GET - Get all ARI notifications
 router.get("/", authenticateToken, async (req, res) => {
   try {
     const { page = 1, limit = 35, search } = req.query;
@@ -52,7 +58,7 @@ router.get("/", authenticateToken, async (req, res) => {
       ];
     }
 
-    const { count, rows: notifications } = await FeverRash.findAndCountAll({
+    const { count, rows: notifications } = await ARI.findAndCountAll({
       where,
       order: [["createdAt", "DESC"]],
       limit: parseInt(limit),
@@ -69,7 +75,7 @@ router.get("/", authenticateToken, async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Error fetching Fever & Rash notifications:", error);
+    console.error("Error fetching ARI notifications:", error);
     res
       .status(500)
       .json({ error: "Failed to fetch notifications", details: error.message });
