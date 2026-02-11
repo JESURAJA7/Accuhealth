@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Search, FileText, ArrowLeft, Loader2, Eye, Edit, Trash2 } from 'lucide-react';
+import { Plus, Search, FileText, ArrowLeft, Loader2, Eye, Edit, Trash2, Download } from 'lucide-react';
 import { API_BASE_URL } from '../../config';
-import HepatitisPDFGenerator from '../../components/DownloadPDF/HepatitisPDFGenerator';
 
 interface HEVRecord {
     _id: string; // Mongoose ID
@@ -116,7 +115,8 @@ const HEVListing: React.FC = () => {
         fetchRecords(search);
     };
 
-    const handleDelete = async (id: string | number) => {
+    const handleDelete = async (id: number | string | undefined) => {
+        if (!id) return;
         if (!window.confirm('Are you sure you want to delete this notification?')) return;
         
         try {
@@ -302,13 +302,14 @@ const HEVListing: React.FC = () => {
                                             <td className="px-6 py-4 text-right">
                                                 <div className="flex items-center justify-center gap-2">
                                                     <button 
+                                                        onClick={() => navigate(`/hev-view/${record.id || record._id}`)}
                                                         className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
                                                         title="View Details"
                                                     >
                                                         <Eye className="h-4 w-4" />
                                                     </button>
                                                     <button 
-                                                        onClick={() => navigate('/hev-notification-form')} 
+                                                        onClick={() => navigate(`/hev-notification/${record.id || record._id}`)} 
                                                         className="p-2 text-slate-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-all"
                                                         title="Edit"
                                                     >
@@ -321,7 +322,13 @@ const HEVListing: React.FC = () => {
                                                     >
                                                         <Trash2 className="h-4 w-4" />
                                                     </button>
-                                                    <HepatitisPDFGenerator data={record as any} type="HEV" />
+                                                    <button 
+                                                        onClick={() => navigate(`/hev-view/${record.id || record._id}`)}
+                                                        className="p-2 text-slate-400 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-all"
+                                                        title="Download PDF"
+                                                    >
+                                                        <Download className="h-4 w-4" />
+                                                    </button>
                                                 </div>
                                             </td>
                                         </tr>

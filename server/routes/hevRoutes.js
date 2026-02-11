@@ -99,6 +99,55 @@ router.get("/", authenticateToken, async (req, res) => {
   }
 });
 
+// GET - Get single HEV notification by ID
+router.get("/:id", authenticateToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const notification = await HevNotification.findOne({ where: { id } });
+
+    if (!notification) {
+      return res.status(404).json({ error: "Notification not found" });
+    }
+
+    res.json(notification);
+  } catch (error) {
+    console.error("Error fetching HEV notification:", error);
+    res
+      .status(500)
+      .json({ error: "Failed to fetch notification", details: error.message });
+  }
+});
+
+// PUT - Update HEV notification
+router.put("/:id", authenticateToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const formData = req.body;
+
+    // Remove id from update data if present
+    delete formData.id;
+    delete formData.createdAt;
+
+    // Ensure reportingDate is valid if present
+    if (formData.reportingDate === "") formData.reportingDate = null;
+
+    const [updated] = await HevNotification.update(formData, {
+      where: { id },
+    });
+
+    if (!updated) {
+      return res.status(404).json({ error: "Notification not found" });
+    }
+
+    res.json({ message: "Notification updated successfully" });
+  } catch (error) {
+    console.error("Error updating HEV notification:", error);
+    res
+      .status(500)
+      .json({ error: "Failed to update notification", details: error.message });
+  }
+});
+
 // DELETE - Delete HEV notification
 router.delete("/:id", authenticateToken, async (req, res) => {
   try {

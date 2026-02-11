@@ -30,6 +30,10 @@ import HEVListing from './pages/HEV/HEVListing';
 import HepatitisNotification from './pages/HEV/HepatitisNotification';
 import HAVListing from './pages/HEV/HAVListing';
 import HBVListing from './pages/HEV/HBVListing';
+import HBVView from './pages/HEV/HBVView';
+import HAVView from './pages/HEV/HAVView';
+import HCVView from './pages/HEV/HCVView';
+import HEVView from './pages/HEV/HEVView';
 import HCVListing from './pages/HEV/HCVListing';
 import HemorrhagicNotification from './pages/Hemorrhagic ds/HemorrhagicNotification';
 import NewEntry from './pages/Hemorrhagic ds/NewEntry';
@@ -341,6 +345,26 @@ function App() {
               }
             />
             <Route
+              path="/hav-notification/:id"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <HepatitisNotification type="HAV" />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+             <Route
+              path="/hav-view/:id"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <HAVView />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/hbv-listing"
               element={
                 <ProtectedRoute>
@@ -356,6 +380,26 @@ function App() {
                 <ProtectedRoute>
                   <Layout>
                     <HepatitisNotification type="HBV" />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/hbv-notification/:id"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <HepatitisNotification type="HBV" />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/hbv-view/:id"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <HBVView />
                   </Layout>
                 </ProtectedRoute>
               }
@@ -381,6 +425,26 @@ function App() {
               }
             />
             <Route
+              path="/hcv-notification/:id"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <HepatitisNotification type="HCV" />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/hcv-view/:id"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <HCVView />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/hev-listing"
               element={
                 <ProtectedRoute>
@@ -396,6 +460,26 @@ function App() {
                 <ProtectedRoute>
                   <Layout>
                     <HepatitisNotification type="HEV" />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/hev-notification/:id"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <HepatitisNotification type="HEV" />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/hev-view/:id"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <HEVView />
                   </Layout>
                 </ProtectedRoute>
               }

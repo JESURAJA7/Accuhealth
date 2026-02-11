@@ -82,6 +82,52 @@ router.get("/", authenticateToken, async (req, res) => {
   }
 });
 
+// GET - Get single HBV notification
+router.get("/:id", authenticateToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const notification = await HbvNotification.findByPk(id);
+
+    if (!notification) {
+      return res.status(404).json({ error: "Notification not found" });
+    }
+
+    res.json(notification);
+  } catch (error) {
+    console.error("Error fetching notification:", error);
+    res
+      .status(500)
+      .json({ error: "Failed to fetch notification", details: error.message });
+  }
+});
+
+// PUT - Update HBV notification
+router.put("/:id", authenticateToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const formData = req.body;
+
+    // Check if notification exists
+    const notification = await HbvNotification.findByPk(id);
+    if (!notification) {
+      return res.status(404).json({ error: "Notification not found" });
+    }
+
+    // Update
+    await notification.update(formData);
+
+    res.json({
+      message: "HBV Notification updated successfully",
+      notification,
+    });
+  } catch (error) {
+    console.error("Error updating HBV notification:", error);
+    res
+      .status(500)
+      .json({ error: "Failed to update notification", details: error.message });
+  }
+});
+
 // DELETE - Delete HBV notification
 router.delete("/:id", authenticateToken, async (req, res) => {
   try {

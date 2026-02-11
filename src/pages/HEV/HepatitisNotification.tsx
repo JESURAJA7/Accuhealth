@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { nationalities } from '../../constants/nationalities';
 
@@ -114,6 +115,49 @@ const HepatitisNotification: React.FC<{ type: 'HAV' | 'HBV' | 'HCV' | 'HEV' }> =
         }
     };
 
+    const { id } = useParams(); // Get ID from URL if editing
+
+    useEffect(() => {
+        if (id) {
+            fetchData();
+        }
+    }, [id]);
+
+    const fetchData = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const apiEndpoint = type === 'HAV' ? 'hav-notifications' : 
+                               type === 'HBV' ? 'hbv-notifications' : 
+                               type === 'HCV' ? 'hcv-notifications' :
+                               'hev-notifications';
+            
+            const response = await fetch(`${API_BASE_URL}/${apiEndpoint}/${id}`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                // Ensure dates are formatted for input[type="date"]
+                const formatDate = (dateString: string) => dateString ? new Date(dateString).toISOString().split('T')[0] : '';
+                
+                setFormData({
+                    ...data,
+                    reportingDate: formatDate(data.reportingDate),
+                    onsetOfSymptomsDate: formatDate(data.onsetOfSymptomsDate),
+                    dob: formatDate(data.dob),
+                    expiryDate: formatDate(data.expiryDate),
+                    // Ensure symptoms are correctly mapped if backend returns them differently
+                    symptoms: typeof data.symptoms === 'string' ? JSON.parse(data.symptoms) : (data.symptoms || formData.symptoms)
+                });
+            } else {
+                toast.error('Failed to load existing data');
+            }
+        } catch (error) {
+            console.error('Error fetching data:', error);
+            toast.error('Error loading data');
+        }
+    };
+
     const handleSubmit = async () => {
         setLoading(true);
         try {
@@ -132,8 +176,11 @@ const HepatitisNotification: React.FC<{ type: 'HAV' | 'HBV' | 'HCV' | 'HEV' }> =
                 }
             });
             
-            const response = await fetch(`${API_BASE_URL}/${apiEndpoint}`, {
-                method: 'POST',
+            const url = id ? `${API_BASE_URL}/${apiEndpoint}/${id}` : `${API_BASE_URL}/${apiEndpoint}`;
+            const method = id ? 'PUT' : 'POST';
+
+            const response = await fetch(url, {
+                method: method,
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'

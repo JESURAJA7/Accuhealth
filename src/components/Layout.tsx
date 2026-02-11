@@ -329,8 +329,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       ],
     },
 
-    { name: 'Settings', href: '/settings', icon: Settings },
-    { name: 'Help / Docs', href: '/help', icon: HelpCircle },
+    // Temporarily disabled
+    // { name: 'Settings', href: '/settings', icon: Settings },
+    // { name: 'Help / Docs', href: '/help', icon: HelpCircle },
   ];
 
   const enhancedNavigation: NavigationItem[] = navigation.map(item => {
@@ -505,7 +506,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         ref={sidebarRef}
         className={`fixed inset-y-0 left-0 z-50 ${collapsed ? 'w-20' : 'w-72'
           } bg-white/90 backdrop-blur-xl border-r border-slate-200/60 transform transition-all duration-500 ease-out lg:translate-x-0 lg:static lg:inset-0 sidebar-transition ${sidebarOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full'
-          }`}
+          } flex flex-col h-screen`}
       >
         <FloatingParticles />
 
@@ -545,7 +546,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </div>
 
         {/* Enhanced Navigation */}
-        <nav className="mt-8 px-2 space-y-1 relative">
+        <nav className="flex-1 overflow-y-auto mt-8 px-2 space-y-1 relative pb-20">
           {enhancedNavigation.map((item, index) => (
             <div
               key={item.name}
@@ -558,14 +559,14 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
         {/* Sidebar Footer */}
         {!collapsed && (
-          <div className="absolute bottom-4 left-4 right-4 animate-fade-in-up">
+          <div className="flex-shrink-0 p-4 animate-fade-in-up">
             <AnimatedHealthIndicator />
           </div>
         )}
       </div>
 
       {/* Enhanced Main Content */}
-      <div className="flex flex-col flex-1 lg:mt-0 content-transition" ref={mainContentRef}>
+      <div className="flex flex-col flex-1 lg:mt-0 content-transition">
         {/* Enhanced Top Bar */}
         <div className={`bg-white/80 backdrop-blur-xl border-b border-gray-200/60 h-16 px-6 flex items-center justify-between sticky top-0 z-30 transition-all duration-300 ${isScrolled ? 'shadow-lg' : 'shadow-sm'
           }`}>
@@ -644,7 +645,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </div>
 
         {/* Enhanced Page Content */}
-        <main className="flex-1 overflow-auto p-6 bg-transparent" ref={mainContentRef}>
+        <main className="flex-1 overflow-y-auto p-6 bg-transparent" ref={mainContentRef}>
           <div className="animate-fade-in-up">
             {children}
           </div>

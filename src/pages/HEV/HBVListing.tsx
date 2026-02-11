@@ -81,6 +81,29 @@ const HBVListing: React.FC = () => {
         fetchRecords(search);
     };
 
+    const handleDelete = async (id: number) => {
+        if (!window.confirm('Are you sure you want to delete this notification?')) return;
+
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch(`${API_BASE_URL}/hbv-notifications/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (response.ok) {
+                setRecords(records.filter(r => r.id !== id));
+                setStats(prev => ({ ...prev, total: prev.total - 1 }));
+            } else {
+                console.error('Failed to delete record');
+            }
+        } catch (error) {
+            console.error('Error deleting record:', error);
+        }
+    };
+
     return (
         <div className="min-h-screen bg-slate-50/50 p-8">
             <div className="max-w-7xl mx-auto space-y-6">
@@ -236,9 +259,29 @@ const HBVListing: React.FC = () => {
                                                 </span>
                                             </td>
                                             <td className="px-6 py-4 text-right">
-                                                <button className="text-blue-600 hover:text-blue-800 font-medium text-sm">
-                                                    View
-                                                </button>
+                                                <div className="flex justify-end gap-2">
+                                                    <button 
+                                                        onClick={() => navigate(`/hbv-view/${record.id}`)}
+                                                        className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                                                        title="View Details"
+                                                    >
+                                                        <FileText className="w-4 h-4" />
+                                                    </button>
+                                                    <button 
+                                                        onClick={() => navigate(`/hbv-notification/${record.id}`)}
+                                                        className="p-2 text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
+                                                        title="Edit"
+                                                    >
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-pencil"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
+                                                    </button>
+                                                    <button 
+                                                        onClick={() => handleDelete(record.id)}
+                                                        className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                                        title="Delete"
+                                                    >
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                                                    </button>
+                                                </div>
                                             </td>
                                         </tr>
                                     ))
