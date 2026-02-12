@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Search, FileText, ArrowLeft, Loader2, Eye, Edit, Trash2, Download } from 'lucide-react';
+import { Plus, Search, FileText, ArrowLeft, Loader2 } from 'lucide-react';
 import { API_BASE_URL } from '../../config';
 
 interface HEVRecord {
@@ -245,7 +245,7 @@ const HEVListing: React.FC = () => {
                                     <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">IDs</th>
                                     <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Reporting Date</th>
                                     <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</th>
-                                    <th className="px-6 py-4 text-center text-xs font-semibold text-slate-500 uppercase tracking-wider">Actions</th>
+                                    <th className="px-6 py-4 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-100">
@@ -300,34 +300,27 @@ const HEVListing: React.FC = () => {
                                                 </span>
                                             </td>
                                             <td className="px-6 py-4 text-right">
-                                                <div className="flex items-center justify-center gap-2">
+                                                <div className="flex justify-end gap-2">
                                                     <button 
                                                         onClick={() => navigate(`/hev-view/${record.id || record._id}`)}
-                                                        className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
+                                                        className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                                                         title="View Details"
                                                     >
-                                                        <Eye className="h-4 w-4" />
+                                                        <FileText className="w-4 h-4" />
                                                     </button>
                                                     <button 
-                                                        onClick={() => navigate(`/hev-notification/${record.id || record._id}`)} 
-                                                        className="p-2 text-slate-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-all"
+                                                        onClick={() => navigate(`/hev-notification/${record.id || record._id}`)}
+                                                        className="p-2 text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
                                                         title="Edit"
                                                     >
-                                                        <Edit className="h-4 w-4" />
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-pencil"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
                                                     </button>
                                                     <button 
                                                         onClick={() => handleDelete(record.id || record._id)}
-                                                        className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                                                        className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                                                         title="Delete"
                                                     >
-                                                        <Trash2 className="h-4 w-4" />
-                                                    </button>
-                                                    <button 
-                                                        onClick={() => navigate(`/hev-view/${record.id || record._id}`)}
-                                                        className="p-2 text-slate-400 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-all"
-                                                        title="Download PDF"
-                                                    >
-                                                        <Download className="h-4 w-4" />
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
                                                     </button>
                                                 </div>
                                             </td>
