@@ -382,24 +382,7 @@ const HCVView: React.FC = () => {
                             </p>
                         </div>
 
-                        {/* Footer: Authorized By & System Details */}
-                        <div className="grid grid-cols-2 gap-8 text-sm">
-                            <div>
-                                <h3 className="font-bold text-blue-800 mb-2">AUTHORIZED BY:</h3>
-                                <div className="space-y-1">
-                                    <div><span className="font-semibold">Doctor / Reporting Officer Name:</span> Dr. {data.createdBy || 'Mohammed Al-Busaidi'}</div>
-                                    <div><span className="font-semibold">Designation:</span> Specialist - Internal Medicine</div>
-                                    <div className="mt-3"><span className="font-semibold">Signature & Seal:</span> <span className="italic text-slate-500">(Digitally Signed)</span></div>
-                                </div>
-                            </div>
-                            <div>
-                                <h3 className="font-bold text-blue-800 mb-2">SYSTEM DETAILS</h3>
-                                <div className="space-y-1">
-                                    <div><span className="font-semibold">Entered By:</span> Surveillance Nurse - A. Fatima</div>
-                                    <div><span className="font-semibold">Entry Date & Time:</span> {data.createdAt ? new Date(data.createdAt).toLocaleString('en-GB') : new Date().toLocaleString('en-GB')}</div>
-                                </div>
-                            </div>
-                        </div>
+
                     </div>
                 </div>
             </div>

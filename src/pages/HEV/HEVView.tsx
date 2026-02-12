@@ -398,43 +398,7 @@ const HEVView: React.FC = () => {
                             </p>
                         </div>
 
-                        {/* Footer: Authorized By & System Details */}
-                        <div className="grid grid-cols-2 gap-8 text-sm">
-                            <div>
-                                <h3 className="font-bold text-blue-900 mb-3 border-b border-blue-100 pb-1">AUTHORIZED BY:</h3>
-                                <div className="space-y-3">
-                                    <div className="grid grid-cols-[100px_1fr] gap-2">
-                                        <span className="font-semibold text-slate-700">Officer Name:</span>
-                                        <span>Dr. {data.createdBy || 'Mohammed Al-Busaidi'}</span>
-                                    </div>
-                                     <div className="grid grid-cols-[100px_1fr] gap-2">
-                                        <span className="font-semibold text-slate-700">Designation:</span>
-                                        <span>Medical Officer</span>
-                                    </div>
-                                     <div className="grid grid-cols-[100px_1fr] gap-2 mt-4">
-                                        <span className="font-semibold text-slate-700">Signature:</span>
-                                        <span className="italic text-slate-400">(Digitally Signed)</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div>
-                                 <h3 className="font-bold text-blue-900 mb-3 border-b border-blue-100 pb-1">SYSTEM DETAILS</h3>
-                                <div className="space-y-3">
-                                    <div className="grid grid-cols-[100px_1fr] gap-2">
-                                        <span className="font-semibold text-slate-700">Entered By:</span>
-                                        <span>System User</span>
-                                    </div>
-                                     <div className="grid grid-cols-[100px_1fr] gap-2">
-                                        <span className="font-semibold text-slate-700">Entry Date:</span>
-                                        <span>{new Date(data.createdAt || data.reportingDate).toLocaleString()}</span>
-                                    </div>
-                                     <div className="grid grid-cols-[100px_1fr] gap-2">
-                                        <span className="font-semibold text-slate-700">IP Address:</span>
-                                        <span>192.168.1.X</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+
                     </div>
                 </div>
             </div>
